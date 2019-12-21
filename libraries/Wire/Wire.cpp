@@ -45,8 +45,12 @@ TwoWire::TwoWire(){}
 void TwoWire::begin(void)
 {
 	MAP_PRCMPeripheralClkEnable(PRCM_I2CA0, PRCM_RUN_MODE_CLK);
-	MAP_PinTypeI2C(PIN_01, PIN_MODE_1);
-	MAP_PinTypeI2C(PIN_02, PIN_MODE_1);
+
+	MAP_PinModeSet(PIN_01, PIN_MODE_0);
+	MAP_PinModeSet(PIN_02, PIN_MODE_0);
+	MAP_PinTypeI2C(PIN_03, PIN_MODE_5);
+	MAP_PinTypeI2C(PIN_04, PIN_MODE_5);
+
 	MAP_PRCMPeripheralReset(PRCM_I2CA0);
 	MAP_I2CMasterInitExpClk(I2C_BASE, F_CPU, true);
 }
@@ -64,6 +68,8 @@ void TwoWire::beginTransmission(int address)
 
 uint8_t TwoWire::I2CTransact(unsigned long ulCmd)
 {
+	uint8_t error = I2C_MASTER_ERR_NONE;
+
 	MAP_I2CMasterIntClearEx(I2C_BASE, MAP_I2CMasterIntStatusEx(I2C_BASE, false));
 	MAP_I2CMasterTimeoutSet(I2C_BASE, I2C_TIMEOUT_VAL);
 	MAP_I2CMasterControl(I2C_BASE, ulCmd);
@@ -71,8 +77,9 @@ uint8_t TwoWire::I2CTransact(unsigned long ulCmd)
 	while((MAP_I2CMasterIntStatusEx(I2C_BASE, false)
 			& (I2C_INT_MASTER | I2C_MRIS_CLKTOUT)) == 0) { }
 
+	error = MAP_I2CMasterErr(I2C_BASE);
 	/* Check for any errors in transfer */
-	if(MAP_I2CMasterErr(I2C_BASE) != I2C_MASTER_ERR_NONE) {
+	if(error != I2C_MASTER_ERR_NONE) {
 		switch(ulCmd) {
 		case I2C_MASTER_CMD_BURST_SEND_START:
 		case I2C_MASTER_CMD_BURST_SEND_CONT:
@@ -90,10 +97,9 @@ uint8_t TwoWire::I2CTransact(unsigned long ulCmd)
 			break;
 		}
 
-		return 0;
+		return -1;
 	}
-
-	return -1;
+	return 0;
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint8_t sendStop)
@@ -161,18 +167,18 @@ uint8_t TwoWire::endTransmission(uint8_t sendStop)
 	MAP_I2CMasterSlaveAddrSet(I2C_BASE, txAddress, false);
 
 	MAP_I2CMasterDataPut(I2C_BASE, txBuffer[txReadIndex]);
-	I2CTransact(I2C_MASTER_CMD_BURST_SEND_START);
-
+	error = I2CTransact(I2C_MASTER_CMD_BURST_SEND_START);
 	txReadIndex = (txReadIndex + 1) % BUFFER_LENGTH;
 
-	while(!TX_BUFFER_EMPTY) {
+	while(error == I2C_MASTER_ERR_NONE && !TX_BUFFER_EMPTY) {
 		MAP_I2CMasterDataPut(I2C_BASE, txBuffer[txReadIndex]);
-		I2CTransact(I2C_MASTER_CMD_BURST_SEND_CONT);
+		error = I2CTransact(I2C_MASTER_CMD_BURST_SEND_CONT);
 		txReadIndex = (txReadIndex + 1) % BUFFER_LENGTH;
 	}
-
+	
 	if(sendStop) {
-		I2CTransact(I2C_MASTER_CMD_BURST_SEND_STOP);
+		if (error == I2C_MASTER_ERR_NONE)
+			I2CTransact(I2C_MASTER_CMD_BURST_SEND_STOP);
 	} else {
 		currentState = MASTER_TX;
 	}
