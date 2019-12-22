@@ -53,7 +53,6 @@ static const uint8_t A0 = 23;
 static const uint8_t A1 = 2;
 static const uint8_t A2 = 6;
 static const uint8_t A3 = 24;*/
-
 #ifdef ARDUINO_MAIN
 const uint32_t port_to_base[] = {
 	NOT_A_PORT,

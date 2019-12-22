@@ -34,8 +34,10 @@ void _init(void)
 } /* extern "C" */
 #endif
 
+extern void PinMuxConfig();
 int main(void)
 {
+	PinMuxConfig();
 	setup();
 
 	for (;;) {

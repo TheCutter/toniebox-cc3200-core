@@ -44,13 +44,6 @@ TwoWire::TwoWire(){}
 
 void TwoWire::begin(void)
 {
-	MAP_PRCMPeripheralClkEnable(PRCM_I2CA0, PRCM_RUN_MODE_CLK);
-
-	MAP_PinModeSet(PIN_01, PIN_MODE_0);
-	MAP_PinModeSet(PIN_02, PIN_MODE_0);
-	MAP_PinTypeI2C(PIN_03, PIN_MODE_5);
-	MAP_PinTypeI2C(PIN_04, PIN_MODE_5);
-
 	MAP_PRCMPeripheralReset(PRCM_I2CA0);
 	MAP_I2CMasterInitExpClk(I2C_BASE, F_CPU, true);
 }
@@ -68,7 +61,7 @@ void TwoWire::beginTransmission(int address)
 
 uint8_t TwoWire::I2CTransact(unsigned long ulCmd)
 {
-	uint8_t error = I2C_MASTER_ERR_NONE;
+	uint32_t error = I2C_MASTER_ERR_NONE;
 
 	MAP_I2CMasterIntClearEx(I2C_BASE, MAP_I2CMasterIntStatusEx(I2C_BASE, false));
 	MAP_I2CMasterTimeoutSet(I2C_BASE, I2C_TIMEOUT_VAL);
