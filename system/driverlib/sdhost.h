@@ -49,7 +49,7 @@
 //*****************************************************************************
 #ifdef __cplusplus
 extern "C"
-//{
+{
 #endif
 
 
@@ -198,7 +198,7 @@ extern void SDHostDataRead(unsigned long ulBase, unsigned long *ulData);
 //
 //*****************************************************************************
 #ifdef __cplusplus
-//}
+}
 #endif
 
 #endif // __SDHOST_H__
