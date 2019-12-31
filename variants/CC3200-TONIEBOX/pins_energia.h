@@ -288,7 +288,7 @@ const uint8_t digital_pin_to_timer[] = {
 	NOT_ON_TIMER, /* 16 - TDI (GPIO23) */
 	TIMERA0A, /* 17 - TDO (GPIO24) */
 	NOT_ON_TIMER, /* 18 - GPIO28 */
-	NOT_ON_TIMER, /* 19 - TCK */
+	TIMERA1B, /* 19 - TCK */
 	NOT_ON_TIMER, /* 20 - TMS (GPIO29) */
 	TIMERA1A, /* 21 - SOP2 (GPIO25) */
 	NOT_ON_TIMER, /* 22 - WLAN_XTAL_N */
