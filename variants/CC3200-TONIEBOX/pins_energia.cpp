@@ -19,6 +19,9 @@ void PinMuxConfig() {
     //MAP_PRCMPeripheralClkEnable(PRCM_TIMERA2, PRCM_RUN_MODE_CLK); //PWM5
     //MAP_PRCMPeripheralClkEnable(PRCM_TIMERA3, PRCM_RUN_MODE_CLK); //PWM6/7
 
+    MAP_PinModeSet(PIN_08, PIN_MODE_0); //Charger connected?
+    //MAP_PinModeSet(PIN_60, PIN_MODE_); //Battery level ADC?
+
     MAP_PinModeSet(PIN_61, PIN_MODE_0); //Power Pin
     MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC
 
