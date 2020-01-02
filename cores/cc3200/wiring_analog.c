@@ -75,8 +75,10 @@ void PWMWrite(uint8_t pin, uint32_t analog_res, uint32_t duty, uint32_t freq)
 		break;
 	/* PWM2/3 */
 	case TIMERA1A:
-	case TIMERA1B:
 		MAP_PinTypeTimer(pnum, PIN_MODE_9);
+		break;
+	case TIMERA1B:
+		MAP_PinTypeTimer(pnum, PIN_MODE_8);
 		break;
 	/* PWM4/5 */
 	case TIMERA2A:
@@ -144,10 +146,14 @@ static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to)
         return value << (to-from);
 }
 
+#define NO_OF_SAMPLES 128
+unsigned long pulAdcSamples[4096];
 uint16_t analogRead(uint8_t pin)
 {
-    uint16_t channel,val;
+    uint16_t channel, val;
     uint16_t pinNum = digitalPinToPinNum(pin);
+	uint16_t uiIndex = 0;
+	uint32_t ulSample; 
 
     switch(pinNum) {
         /* case PIN_57: {channel = ADC_CH_0;}break; */
@@ -157,11 +163,32 @@ uint16_t analogRead(uint8_t pin)
         default: return 0;
     }
 
-    while(ADCFIFOLvlGet(ADC_BASE, channel)) { // flush the channel's FIFO if not empty
+    MAP_PinTypeADC(pinNum, PIN_MODE_255);
+	MAP_ADCTimerConfig(ADC_BASE,2^17); // Configure ADC timer which is used to timestamp the ADC data samples
+	MAP_ADCTimerEnable(ADC_BASE); // Enable ADC timer which is used to timestamp the ADC data samples
+	MAP_ADCEnable(ADC_BASE); // Enable ADC module
+	MAP_ADCChannelEnable(ADC_BASE, channel); // Enable ADC channel
+
+	while (uiIndex < NO_OF_SAMPLES + 4) {
+		if (MAP_ADCFIFOLvlGet(ADC_BASE, channel)) {
+			ulSample = MAP_ADCFIFORead(ADC_BASE, channel);
+			pulAdcSamples[uiIndex++] = ulSample;
+		}
+	}
+    MAP_ADCDisable(ADC_BASE);
+    MAP_ADCChannelDisable(ADC_BASE, channel);
+    MAP_ADCTimerDisable(ADC_BASE);
+
+	return (pulAdcSamples[4] >> 2 ) & 0x0FFF;
+
+	
+	/*
+	MAP_PinTypeADC(pinNum, PIN_MODE_255);
+	
+	while(ADCFIFOLvlGet(ADC_BASE, channel)) { // flush the channel's FIFO if not empty
         ADCFIFORead(ADC_BASE, channel);
     }
 
-    PinTypeADC(pinNum,0xFF);
     ADCChannelEnable(ADC_BASE, channel);
     ADCTimerConfig(ADC_BASE,0x1ffff);
     ADCTimerEnable(ADC_BASE);
@@ -175,6 +202,7 @@ uint16_t analogRead(uint8_t pin)
     ADCTimerDisable(ADC_BASE);
 
     val = val >> 2;
-    return mapResolution(val, 12, _readResolution);
+    return mapResolution(val, 12, _readResolution);*/
+	
 }
 

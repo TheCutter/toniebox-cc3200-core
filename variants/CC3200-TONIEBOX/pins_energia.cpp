@@ -14,19 +14,21 @@ void PinMuxConfig() {
     MAP_PRCMPeripheralClkEnable(PRCM_I2CA0, PRCM_RUN_MODE_CLK);
     MAP_PRCMPeripheralClkEnable(PRCM_GSPI, PRCM_RUN_MODE_CLK);
     
-    //MAP_PRCMPeripheralClkEnable(PRCM_TIMERA0, PRCM_RUN_MODE_CLK); //PWM0/1
+    /*
+    MAP_PRCMPeripheralClkEnable(PRCM_TIMERA0, PRCM_RUN_MODE_CLK); //PWM0/1
     MAP_PRCMPeripheralClkEnable(PRCM_TIMERA1, PRCM_RUN_MODE_CLK); //PWM2/3
-    //MAP_PRCMPeripheralClkEnable(PRCM_TIMERA2, PRCM_RUN_MODE_CLK); //PWM5
-    //MAP_PRCMPeripheralClkEnable(PRCM_TIMERA3, PRCM_RUN_MODE_CLK); //PWM6/7
+    MAP_PRCMPeripheralClkEnable(PRCM_TIMERA2, PRCM_RUN_MODE_CLK); //PWM5
+    MAP_PRCMPeripheralClkEnable(PRCM_TIMERA3, PRCM_RUN_MODE_CLK); //PWM6/7
+    */
 
     MAP_PinModeSet(PIN_08, PIN_MODE_0); //Charger connected?
-    //MAP_PinModeSet(PIN_60, PIN_MODE_); //Battery level ADC?
+    //MAP_PinTypeADC(PIN_60, 0xFF);  //Battery level ADC?
 
     MAP_PinModeSet(PIN_61, PIN_MODE_0); //Power Pin
     MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC
 
     MAP_PinModeSet(PIN_17, PIN_MODE_0); //LED Blue
-    MAP_PinTypeTimer(PIN_19, PIN_MODE_8); //LED Red PWM3? SWD...
+    //MAP_PinTypeTimer(PIN_19, PIN_MODE_8); //LED Red PWM3? SWD...
     MAP_PinModeSet(PIN_21, PIN_MODE_0); //LED Green
 
     //See HardwareSerial.cpp
