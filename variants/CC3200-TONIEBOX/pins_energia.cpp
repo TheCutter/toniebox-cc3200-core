@@ -50,7 +50,7 @@ void PinMuxConfig() {
     MAP_PinTypeSPI(PIN_07, PIN_MODE_7); //GSPI_MOSI
     MAP_PinModeSet(PIN_18, PIN_MODE_0); //RFID IRQ
 
-    MAP_PinTypeI2S(PIN_50, PIN_MODE_6); //I2S Data1 (DIN)
+    MAP_PinTypeI2S(PIN_50, PIN_MODE_4); //I2S Data0 (DIN)
     MAP_PinTypeI2S(PIN_53, PIN_MODE_2); //I2S ClockO (BCLK)
     MAP_PinTypeI2S(PIN_63, PIN_MODE_7); //I2S Frame Sync (WCLK)
 }
