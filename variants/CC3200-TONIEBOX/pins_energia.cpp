@@ -24,6 +24,7 @@ void PinMuxConfig() {
     MAP_PinModeSet(PIN_08, PIN_MODE_0); //Charger connected?
     //MAP_PinTypeADC(PIN_60, 0xFF);  //Battery level ADC?
 
+    MAP_PinModeSet(PIN_58, PIN_MODE_0); //Power SD Pin
     MAP_PinModeSet(PIN_61, PIN_MODE_0); //Power Pin
     MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC
 
