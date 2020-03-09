@@ -7,6 +7,7 @@
 
 #include <FatFs.h>
 
+#define POWER_SD_PIN 58 //58 GPIO03
 #define POWER_PIN 61 //61 GPIO06
 #define RESET_DAC_PIN 62 //62 GPIO07
 
@@ -14,16 +15,18 @@ void setup()
 {
   pinMode(RESET_DAC_PIN, OUTPUT);
   pinMode(POWER_PIN, OUTPUT);
+  pinMode(POWER_SD_PIN, OUTPUT);
   
   digitalWrite(RESET_DAC_PIN, HIGH);
   digitalWrite(POWER_PIN, HIGH);
+  digitalWrite(POWER_SD_PIN, LOW);
   
   int res;
 
   Serial.begin( 115200 );
   Serial.println( "== Testing FatFs on Arduino ==" );
-  //Serial.println( "Press a key to start\n" );
-  //while( Serial.read() < 0 )
+  Serial.println( "Press a key to start\n" );
+  while( Serial.read() < 0 )
     delay( 1 );
   delay( 400 );
 
@@ -58,7 +61,7 @@ void setup()
     }
 
   // Create directory
-  char * dirName = "/Nouveau répertoire";
+  char * dirName = "/NewDir";
   Serial.print( "\nCreate directory '" );
   Serial.print( dirName );
   Serial.println( "'" );
@@ -77,7 +80,7 @@ void setup()
 
   // Create a file in that directory
   FileFs file;
-  char * fileName = "/Nouveau répertoire/Test d'écriture.txt";
+  char * fileName = "/NewDir/TestInDir.txt";
   Serial.print( "\nCreate file '" );
   Serial.print( fileName );
   Serial.println( "'" );
@@ -86,22 +89,22 @@ void setup()
   
   // Writing text to a file and closing it
   Serial.println( "Write to file" );
-  res = file.writeString( "Test d'écriture dans un fichier\r\n" );
+  res = file.writeString( "Test writing to file 1\r\n" );
   if( res >= 0 )
-    res = file.writeString( "Testing writing to file\r\n" );
+    res = file.writeString( "Testing writing to file 2\r\n" );
   if( res >= 0 )
-    res = file.writeString( "Prueba de escritura en un archivo\r\n" );
+    res = file.writeString( "Test writing to file 3\r\n" );
   // Write next line using writeBuffer()
   if( res >= 0 )
   {
-    char * ps1 = "Test di scrittura su file\r\n";
+    char * ps1 = "Test writing to file 4\r\n";
     uint32_t nwrite = file.write( ps1, strlen( ps1 ));
     res = nwrite == strlen( ps1 );
   }
   // Write last line byte per byte,  using writeChar()
   if( res >= 0 )
   {
-    char * ps2 = "Testes de gravação em um arquivo\r\n";
+    char * ps2 = "Byte by byte\r\n";
     uint8_t pc = 0 ;
     while( res >= 0 && ps2[ pc ] != 0 )
       res = file.writeChar( ps2[ pc ++ ] );
