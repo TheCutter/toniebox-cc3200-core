@@ -126,14 +126,16 @@ bool FatFsClass::begin()
   // Enable Pull up on CMD
   MAP_PinConfigSet(PIN_02, PIN_STRENGTH_4MA, PIN_TYPE_STD_PU);
 
-	// Enable MMCHS
-	MAP_PRCMPeripheralClkEnable(PRCM_SDHOST, PRCM_RUN_MODE_CLK);
+  // Enable SD peripheral clock
+  MAP_PRCMPeripheralClkEnable(PRCM_SDHOST, PRCM_RUN_MODE_CLK | PRCM_SLP_MODE_CLK);
 	// Reset MMCHS
 	MAP_PRCMPeripheralReset(PRCM_SDHOST);
 	// Configure MMCHS
 	MAP_SDHostInit(SDHOST_BASE);
 	// Configure card clock
 	MAP_SDHostSetExpClk(SDHOST_BASE, MAP_PRCMPeripheralClockGet(PRCM_SDHOST), 15000000);
+
+  MAP_SDHostBlockSizeSet(SDHOST_BASE, 512); //SD_SECTOR_SIZE
 
   ffs_result = FR_OK;
   ffs_result = f_mount(&ffs, "0", 1);
