@@ -1,3 +1,4 @@
 system/driverlib/gcc-cm4f/*.d
 system/driverlib/gcc-cm4f/*.o
 system/driverlib/gcc-cm4f
+FatFS/*
