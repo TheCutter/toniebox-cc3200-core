@@ -9,7 +9,7 @@
 #endif
 
 #include <ctype.h>
-#include <pgmspace.h>
+//#include <pgmspace.h>
 
 #define LOG_LEVEL_NOOUTPUT 0 
 #define LOG_LEVEL_ERRORS 1

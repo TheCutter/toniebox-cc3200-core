@@ -35,6 +35,7 @@
 //     -std=c++0x
 
 class __FlashStringHelper;
+#define FPSTR(pstr_pointer) (reinterpret_cast<const __FlashStringHelper *>(pstr_pointer))
 #define F(string_literal) (reinterpret_cast<const __FlashStringHelper *>(PSTR(string_literal)))
 
 // An inherited class for holding the result of a concatenation.  These
@@ -147,7 +148,8 @@ public:
 	unsigned char operator >  (const String &rhs) const;
 	unsigned char operator <= (const String &rhs) const;
 	unsigned char operator >= (const String &rhs) const;
-	unsigned char equalsIgnoreCase(const String &s) const;
+	unsigned char equalsIgnoreCase(const String &s2) const;
+	unsigned char equalsConstantTime(const String &s) const;
 	unsigned char startsWith( const String &prefix) const;
 	unsigned char startsWith(const String &prefix, unsigned int offset) const;
 	unsigned char endsWith(const String &suffix) const;
