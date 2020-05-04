@@ -57,3 +57,11 @@ size_t IPAddress::printTo(Print& p) const
     return n;
 }
 
+String IPAddress::toString() const
+{
+    return String(_address[0]) + String(".") +\
+  String(_address[1]) + String(".") +\
+  String(_address[2]) + String(".") +\
+  String(_address[3]);
+}
+
