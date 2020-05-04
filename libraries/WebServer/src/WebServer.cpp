@@ -22,7 +22,8 @@
 
 
 #include <Arduino.h>
-#include <esp32-hal-log.h>
+//#include <esp32-hal-log.h>
+#include "Logging.h"
 #include <libb64/cencode.h>
 #include "WiFiServer.h"
 #include "WiFiClient.h"
@@ -32,32 +33,16 @@
 #include "mbedtls/md5.h"
 
 
+
+namespace std {
+    void __throw_bad_function_call() {}
+    void __throw_length_error(char const*) {}
+}
+
 static const char AUTHORIZATION_HEADER[] = "Authorization";
 static const char qop_auth[] = "qop=auth";
 static const char WWW_Authenticate[] = "WWW-Authenticate";
 static const char Content_Length[] = "Content-Length";
-
-
-WebServer::WebServer(IPAddress addr, int port)
-: _corsEnabled(false)
-, _server(addr, port)
-, _currentMethod(HTTP_ANY)
-, _currentVersion(0)
-, _currentStatus(HC_NONE)
-, _statusChange(0)
-, _currentHandler(nullptr)
-, _firstHandler(nullptr)
-, _lastHandler(nullptr)
-, _currentArgCount(0)
-, _currentArgs(nullptr)
-, _postArgsLen(0)
-, _postArgs(nullptr)
-, _headerKeysCount(0)
-, _currentHeaders(nullptr)
-, _contentLength(0)
-, _chunked(false)
-{
-}
 
 WebServer::WebServer(int port)
 : _corsEnabled(false)
@@ -81,7 +66,7 @@ WebServer::WebServer(int port)
 }
 
 WebServer::~WebServer() {
-  _server.close();
+  //_server.close();
   if (_currentHeaders)
     delete[]_currentHeaders;
   RequestHandler* handler = _firstHandler;
@@ -95,13 +80,7 @@ WebServer::~WebServer() {
 void WebServer::begin() {
   close();
   _server.begin();
-  _server.setNoDelay(true);
-}
-
-void WebServer::begin(uint16_t port) {
-  close();
-  _server.begin(port);
-  _server.setNoDelay(true);
+  //_server.setNoDelay(true);
 }
 
 String WebServer::_extractParam(String& authReq,const String& param,const char delimit){
@@ -160,7 +139,7 @@ bool WebServer::authenticate(const char * username, const char * password){
       delete[] encoded;
     } else if(authReq.startsWith(F("Digest"))) {
       authReq = authReq.substring(7);
-      log_v("%s", authReq.c_str());
+      Log.verbose("%s", authReq.c_str());
       String _username = _extractParam(authReq,F("username=\""));
       if(!_username.length() || _username != String(username)) {
         authReq = "";
@@ -188,7 +167,7 @@ bool WebServer::authenticate(const char * username, const char * password){
         _cnonce = _extractParam(authReq, F("cnonce=\""));
       }
       String _H1 = md5str(String(username) + ':' + _realm + ':' + String(password));
-      log_v("Hash of user:realm:pass=%s", _H1.c_str());
+      Log.verbose("Hash of user:realm:pass=%s", _H1.c_str());
       String _H2 = "";
       if(_currentMethod == HTTP_GET){
           _H2 = md5str(String(F("GET:")) + _uri);
@@ -201,14 +180,14 @@ bool WebServer::authenticate(const char * username, const char * password){
       }else{
           _H2 = md5str(String(F("GET:")) + _uri);
       }
-      log_v("Hash of GET:uri=%s", _H2.c_str());
+      Log.verbose("Hash of GET:uri=%s", _H2.c_str());
       String _responsecheck = "";
       if(authReq.indexOf(FPSTR(qop_auth)) != -1) {
           _responsecheck = md5str(_H1 + ':' + _nonce + ':' + _nc + ':' + _cnonce + F(":auth:") + _H2);
       } else {
           _responsecheck = md5str(_H1 + ':' + _nonce + ':' + _H2);
       }
-      log_v("The Proper response=%s", _responsecheck.c_str());
+      Log.verbose("The Proper response=%s", _responsecheck.c_str());
       if(_response == _responsecheck){
         authReq = "";
         return true;
@@ -223,7 +202,7 @@ String WebServer::_getRandomHexString() {
   char buffer[33];  // buffer to hold 32 Hex Digit + /0
   int i;
   for(i = 0; i < 4; i++) {
-    sprintf (buffer + (i*8), "%08x", esp_random());
+    sprintf (buffer + (i*8), "%08x", (uint32_t)rand());
   }
   return String(buffer);
 }
@@ -283,7 +262,7 @@ void WebServer::handleClient() {
       return;
     }
 
-    log_v("New client");
+    Log.verbose("New client");
 
     _currentClient = client;
     _currentStatus = HC_WAIT_READ;
@@ -337,12 +316,12 @@ void WebServer::handleClient() {
   }
 
   if (callYield) {
-    yield();
+    //yield();
   }
 }
 
 void WebServer::close() {
-  _server.close();
+  //_server.close();
   _currentStatus = HC_NONE;
   if(!_headerKeysCount)
     collectHeaders(0, 0);
@@ -466,7 +445,7 @@ void WebServer::sendContent(const String& content) {
   }
   _currentClientWrite(content.c_str(), len);
   if(_chunked){
-    _currentClient.write(footer, 2);
+    _currentClient.write((const uint8_t*)footer, 2);
     if (len == 0) {
       _chunked = false;
     }
@@ -489,7 +468,7 @@ void WebServer::sendContent_P(PGM_P content, size_t size) {
   }
   _currentClientWrite_P(content, size);
   if(_chunked){
-    _currentClient.write(footer, 2);
+    _currentClient.write((const uint8_t*)footer, 2);
     if (size == 0) {
       _chunked = false;
     }
@@ -614,12 +593,12 @@ void WebServer::onNotFound(THandlerFunction fn) {
 void WebServer::_handleRequest() {
   bool handled = false;
   if (!_currentHandler){
-    log_e("request handler not found");
+    Log.error("request handler not found");
   }
   else {
     handled = _currentHandler->handle(*this, _currentMethod, _currentUri);
     if (!handled) {
-      log_e("request handler failed to handle request");
+      Log.error("request handler failed to handle request");
     }
   }
   if (!handled && _notFoundHandler) {

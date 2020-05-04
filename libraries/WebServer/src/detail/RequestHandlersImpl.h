@@ -105,7 +105,7 @@ public:
     , _cache_header(cache_header)
     {
         _isFile = fs.exists(path);
-        log_v("StaticRequestHandler: path=%s uri=%s isFile=%d, cache_header=%s\r\n", path, uri, _isFile, cache_header);
+        Log.verbose("StaticRequestHandler: path=%s uri=%s isFile=%d, cache_header=%s\r\n", path, uri, _isFile, cache_header);
         _baseUriLength = _uri.length();
     }
 
@@ -123,7 +123,7 @@ public:
         if (!canHandle(requestMethod, requestUri))
             return false;
 
-        log_v("StaticRequestHandler::handle: request=%s _uri=%s\r\n", requestUri.c_str(), _uri.c_str());
+        Log.verbose("StaticRequestHandler::handle: request=%s _uri=%s\r\n", requestUri.c_str(), _uri.c_str());
 
         String path(_path);
 
@@ -136,7 +136,7 @@ public:
             // Append whatever follows this URI in request to get the file path.
             path += requestUri.substring(_baseUriLength);
         }
-        log_v("StaticRequestHandler::handle: path=%s, isFile=%d\r\n", path.c_str(), _isFile);
+        Log.verbose("StaticRequestHandler::handle: path=%s, isFile=%d\r\n", path.c_str(), _isFile);
 
         String contentType = getContentType(path);
 

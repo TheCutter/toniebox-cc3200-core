@@ -69,12 +69,10 @@ class FS;
 class WebServer
 {
 public:
-  WebServer(IPAddress addr, int port = 80);
   WebServer(int port = 80);
   virtual ~WebServer();
 
   virtual void begin();
-  virtual void begin(uint16_t port);
   virtual void handleClient();
 
   virtual void close();
@@ -140,8 +138,8 @@ public:
   }
 
 protected:
-  virtual size_t _currentClientWrite(const char* b, size_t l) { return _currentClient.write( b, l ); }
-  virtual size_t _currentClientWrite_P(PGM_P b, size_t l) { return _currentClient.write_P( b, l ); }
+  virtual size_t _currentClientWrite(const char* b, size_t l) { return _currentClient.write( (const uint8_t*)b, l ); }
+  virtual size_t _currentClientWrite_P(PGM_P b, size_t l) { return _currentClient.write( (const uint8_t*)b, l ); }
   void _addRequestHandler(RequestHandler* handler);
   void _handleRequest();
   void _finalizeResponse();
