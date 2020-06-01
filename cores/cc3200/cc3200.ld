@@ -17,7 +17,7 @@ HEAP_SIZE = 0x0000D000; /*Original Size: 0x00010000*/
 
 MEMORY
 {
-    SRAM (rwx) : ORIGIN = 0x20004000, LENGTH = 0x00030000 /*only 196kB?! for 256kB use 0x3BFFF*/
+    SRAM (rwx) : ORIGIN = 0x20004000, LENGTH = 0x3BFFF /* 0x30000 only 196kB?! for 256kB use 0x3BFFF*/
 }
 
 SECTIONS
