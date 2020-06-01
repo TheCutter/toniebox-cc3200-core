@@ -28,9 +28,9 @@ void PinMuxConfig() {
     MAP_PinModeSet(PIN_61, PIN_MODE_0); //Power Pin
     MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC
 
-    MAP_PinModeSet(PIN_17, PIN_MODE_0); //LED Blue
+    //MAP_PinModeSet(PIN_17, PIN_MODE_0); //LED Blue
     //MAP_PinTypeTimer(PIN_19, PIN_MODE_8); //LED Red PWM3? SWD...
-    MAP_PinModeSet(PIN_21, PIN_MODE_0); //LED Green
+    //MAP_PinModeSet(PIN_21, PIN_MODE_0); //LED Green
 
     //See HardwareSerial.cpp
     //MAP_PinTypeUART(PIN_55, PIN_MODE_3); //TX0 

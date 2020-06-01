@@ -41,6 +41,7 @@ extern "C"{
 #endif
 
 void PWMWrite(uint8_t pin, uint32_t analog_res, uint32_t duty, uint32_t freq);
+void PWMPrepare(uint8_t pin);
 uint8_t getTimerInterrupt(uint8_t timer);
 uint32_t getTimerBase(uint32_t offset);
 void ToneIntHandler(void);

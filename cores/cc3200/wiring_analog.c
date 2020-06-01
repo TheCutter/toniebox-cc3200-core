@@ -44,27 +44,11 @@
 
 static int _readResolution = 12;
 
-void PWMWrite(uint8_t pin, uint32_t analog_res, uint32_t duty, uint32_t freq)
-{
-	analog_res = analog_res * 1000;
-	freq;
-
-	uint32_t load = (F_CPU / freq) * 1000;
-	uint32_t match = load / (analog_res / duty);
-
-	match = match;
-	load = load / 1000;
-
-	uint16_t prescaler = load >> 16;
-	uint16_t prescaler_match = match >> 16;
-
+void PWMPrepare(uint8_t pin) {
 	uint8_t timer = digitalPinToTimer(pin);
-
-	if(timer == NOT_ON_TIMER)
-		return;
-
 	MAP_PRCMPeripheralClkEnable(PRCM_TIMERA0 + (timer/2), PRCM_RUN_MODE_CLK);
 
+	uint32_t base = TIMERA0_BASE + ((timer/2) << 12);
 	uint16_t pnum = digitalPinToPinNum(pin);
 
 	switch(timer) {
@@ -91,11 +75,29 @@ void PWMWrite(uint8_t pin, uint32_t analog_res, uint32_t duty, uint32_t freq)
 		MAP_PinTypeTimer(pnum, PIN_MODE_3);
 		break;
 	}
+	MAP_TimerConfigure(base, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PWM | TIMER_CFG_B_PWM);
+}
+
+void PWMWrite(uint8_t pin, uint32_t analog_res, uint32_t duty, uint32_t freq)
+{
+	analog_res = analog_res * 1000;
+	freq;
+
+	uint32_t load = (F_CPU / freq) * 1000;
+	uint32_t match = load / (analog_res / duty);
+
+	match = match;
+	load = load / 1000;
+
+	uint16_t prescaler = load >> 16;
+	uint16_t prescaler_match = match >> 16;
+
+	uint8_t timer = digitalPinToTimer(pin);
+
+	if(timer == NOT_ON_TIMER)
+		return;
 
 	uint32_t base = TIMERA0_BASE + ((timer/2) << 12);
-
-	/* FIXME: If B is already opperational and configure A, B get's messed up. */
-	MAP_TimerConfigure(base, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PWM | TIMER_CFG_B_PWM);
 
 	uint16_t timerab = timer % 2 ? TIMER_B : TIMER_A;
 	MAP_TimerPrescaleSet(base, timerab, prescaler);
