@@ -5,7 +5,7 @@
 
 class EnhancedThread : public Thread {
   public:
-    virtual void loop();
+    virtual void loop(){};
     void
       run(void),
       runIfNeeded(void),
