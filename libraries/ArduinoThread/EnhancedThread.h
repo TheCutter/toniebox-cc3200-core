@@ -5,6 +5,10 @@
 
 class EnhancedThread : public Thread {
   public:
+    EnhancedThread(unsigned long _interval = 0)
+      : Thread(_interval) { };
+    EnhancedThread(ThreadCallbackHandler callbackHandler, unsigned long _interval = 0)
+      : Thread(callbackHandler, _interval) { };
     void
       run(void),
       runIfNeeded(void),
