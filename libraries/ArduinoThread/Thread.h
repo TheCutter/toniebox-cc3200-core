@@ -21,6 +21,8 @@
 #endif
 
 #include <inttypes.h>
+#include <functional>
+#include <ThreadCallbackHandler.h>
 
 /*
 	Uncomment this line to enable ThreadName Strings.
@@ -41,6 +43,8 @@ protected:
 	// Scheduled run in Ms (MUST BE CACHED)	
 	unsigned long _cached_next_run;
 
+	void _prepare(unsigned long _interval = 0);
+
 	/*
 		IMPORTANT! Run after all calls to run()
 		Updates last_run and cache next run.
@@ -51,9 +55,8 @@ protected:
 
 	// Default is to mark it runned "now"
 	void runned() { runned(millis()); }
-
-	// Callback for run() if not implemented
-	void (*_onRun)(void);		
+	
+	ThreadCallbackHandler _callbackHandler;
 
 public:
 
@@ -68,7 +71,8 @@ public:
 		String ThreadName;			
 	#endif
 
-	Thread(void (*callback)(void) = NULL, unsigned long _interval = 0);
+	Thread(unsigned long _interval = 0);
+	Thread(ThreadCallbackHandler callbackHandler, unsigned long _interval = 0);
 
 	// Set the desired interval for calls, and update _cached_next_run
 	virtual void setInterval(unsigned long _interval);
@@ -80,7 +84,7 @@ public:
 	bool shouldRun() { return shouldRun(millis()); }
 
 	// Callback set
-	void onRun(void (*callback)(void));
+	void onRun(ThreadCallbackHandler callbackHandler);
 
 	// Runs Thread
 	virtual void run();

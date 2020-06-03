@@ -2,7 +2,6 @@
 
 void EnhancedThread::run() {
   Thread::run();
-  loop();
   if (_runOnce)
     Thread::enabled = false;
 }

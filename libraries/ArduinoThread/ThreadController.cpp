@@ -19,8 +19,7 @@ ThreadController::ThreadController(unsigned long _interval): Thread(){
 */
 void ThreadController::run(){
 	// Run this thread before
-	if(_onRun != NULL)
-		_onRun();
+	_callbackHandler.callback();
 
 	unsigned long time = millis();
 	int checks = 0;

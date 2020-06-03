@@ -41,8 +41,7 @@ public:
 	void run() override
 	{
 		// Run this thread before
-		if(_onRun != nullptr && shouldRun())
-			_onRun();
+		_callbackHandler.callback();
 
 		for(int i = 0; i < N; i++){
 			// Is enabled? Timeout exceeded?

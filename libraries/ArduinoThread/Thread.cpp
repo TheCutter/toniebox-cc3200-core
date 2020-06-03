@@ -1,8 +1,15 @@
 #include "Thread.h"
 
-Thread::Thread(void (*callback)(void), unsigned long _interval){
-	enabled = true;
+Thread::Thread(unsigned long _interval) {
+	_prepare(_interval);
+};
+Thread::Thread(ThreadCallbackHandler callback, unsigned long _interval) {
 	onRun(callback);
+	_prepare(_interval);
+};
+
+void Thread::_prepare(unsigned long _interval) {
+	enabled = true;
 	_cached_next_run = 0;
 	last_run = millis();
 
@@ -13,7 +20,7 @@ Thread::Thread(void (*callback)(void), unsigned long _interval){
 	#endif
 
 	setInterval(_interval);
-};
+}
 
 void Thread::runned(unsigned long time){
 	// Saves last_run
@@ -39,14 +46,12 @@ bool Thread::shouldRun(unsigned long time){
 	return !time_remaining && enabled;
 }
 
-void Thread::onRun(void (*callback)(void)){
-	_onRun = callback;
+void Thread::onRun(ThreadCallbackHandler callbackHandler){
+	_callbackHandler = callbackHandler;
 }
 
 void Thread::run(){
-	if(_onRun != NULL)
-		_onRun();
-
+	_callbackHandler.callback();
 	// Update last_run and _cached_next_run
 	runned();
 }
