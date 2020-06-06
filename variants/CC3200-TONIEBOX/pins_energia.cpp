@@ -26,7 +26,7 @@ void PinMuxConfig() {
 
     MAP_PinModeSet(PIN_58, PIN_MODE_0); //Power SD Pin
     MAP_PinModeSet(PIN_61, PIN_MODE_0); //Power Pin
-    MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC
+    MAP_PinModeSet(PIN_62, PIN_MODE_0); //Reset DAC/Enable Accelerometer
 
     //MAP_PinModeSet(PIN_17, PIN_MODE_0); //LED Blue
     //MAP_PinTypeTimer(PIN_19, PIN_MODE_8); //LED Red PWM3? SWD...
