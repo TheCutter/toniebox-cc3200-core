@@ -82,6 +82,7 @@ public:
 	*/
 	void init(int level, long baud);
 	void init(int level, long baud, Stream* additionalLogger);
+	void setAdditionalLogger(Stream* additionalLogger);
 	
     /**
 	* Output an error message. Output message contains

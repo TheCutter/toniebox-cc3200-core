@@ -11,8 +11,11 @@ void Logging::init(int level, long baud){
 	info("Start logging");
 }
 void Logging::init(int level, long baud, Stream* additionalLogger) {
-	_additionalLogger = additionalLogger;
+	setAdditionalLogger(additionalLogger);
 	init(level, baud);
+}
+void Logging::setAdditionalLogger(Stream* additionalLogger) {
+	_additionalLogger = additionalLogger;
 }
 
 void Logging::error(const char* msg, ...){
