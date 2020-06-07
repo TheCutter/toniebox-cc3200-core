@@ -18,7 +18,7 @@
 #define LOG_LEVEL_VERBOSE 4
 
 // default loglevel if nothing is set from user
-#define LOGLEVEL LOG_LEVEL_DEBUG 
+#define LOGLEVEL LOG_LEVEL_VERBOSE 
 
 #define LOGGING_VERSION 1
 
