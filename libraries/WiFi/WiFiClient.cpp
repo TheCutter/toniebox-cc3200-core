@@ -565,6 +565,29 @@ WiFiClient::operator bool()
     return _socketIndex != 255;
 }
 
+IPAddress WiFiClient::remoteIP() {/* TODO
+    #ifndef SL_PLATFORM_MULTI_THREADED
+        //
+        //the local IP is maintained with callbacks, so sl_Task()
+        //is critical. The IP is "written" into the buffer to avoid memory errors
+        //
+        sl_Task();
+    #endif
+
+    SlNetCfgIpV4Args_t config = {0};
+    unsigned char len = sizeof(SlNetCfgIpV4Args_t);
+    sl_NetCfgGet(SL_IPV4_STA_P2P_CL_GET_INFO, NULL, &len, (unsigned char*)&config);
+
+    //
+    //change the uint32_t IP to the IPAddress class and return
+    //
+    IPAddress retIP(0,0,0,0);
+    retIP = sl_Htonl(config.ipV4);
+    return retIP;*/
+
+    IPAddress retIP(127,0,0,1);
+    return retIP;
+}
 
 
 

@@ -62,6 +62,7 @@ public:
     friend class WiFiServer;
 
     boolean sslIsVerified;
+    IPAddress remoteIP();
     
 protected:
     int _socketIndex;
