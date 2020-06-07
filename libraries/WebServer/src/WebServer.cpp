@@ -262,7 +262,7 @@ void WebServer::handleClient() {
       return;
     }
 
-    Log.verbose("New client");
+    //Log.verbose("New client");
 
     _currentClient = client;
     _currentStatus = HC_WAIT_READ;
