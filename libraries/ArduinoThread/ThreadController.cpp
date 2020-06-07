@@ -1,6 +1,8 @@
 #include "Thread.h"
 #include "ThreadController.h"
 
+#include <Logging.h>
+
 ThreadController::ThreadController(unsigned long _interval): Thread(){
 	cached_size = 0;
 
@@ -44,8 +46,10 @@ void ThreadController::run(){
 bool ThreadController::add(Thread* _thread){
 	// Check if the Thread already exists on the array
 	for(int i = 0; i < MAX_THREADS; i++){
-		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID)
-			return true;
+		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID) {
+			Log.info("Thread already added to thread controller.");
+			//return true;
+		}
 	}
 
 	// Find an empty slot
@@ -54,10 +58,12 @@ bool ThreadController::add(Thread* _thread){
 			// Found a empty slot, now add Thread
 			thread[i] = _thread;
 			cached_size++;
+			Log.debug("Added thread %i to thread controller.", i);
 			return true;
 		}
 	}
 
+	Log.debug("Thread not added to thread controller, please increase MAX_THREADS (%i).", MAX_THREADS);
 	// Array is full
 	return false;
 }
