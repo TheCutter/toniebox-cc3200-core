@@ -262,7 +262,7 @@ void WebServer::handleClient() {
       return;
     }
 
-    //Log.verbose("New client");
+    Log.verbose("New client pointer=%i", &client);
 
     _currentClient = client;
     _currentStatus = HC_WAIT_READ;
@@ -294,8 +294,10 @@ void WebServer::handleClient() {
           }
         }
       } else { // !_currentClient.available()
-        if (millis() - _statusChange <= HTTP_MAX_DATA_WAIT) {
+        if (millis() - _statusChange <= HTTP_MAX_DATA_WAIT || _currentClient.isSse) {
           keepCurrentClient = true;
+        } else {
+          Log.info("Client %i timeout (HC_WAIT_READ)", &_currentClient);
         }
         callYield = true;
       }
@@ -305,6 +307,8 @@ void WebServer::handleClient() {
       if (millis() - _statusChange <= HTTP_MAX_CLOSE_WAIT) {
         keepCurrentClient = true;
         callYield = true;
+      } else {
+          Log.info("Client %i timeout (HC_WAIT_CLOSE)", &_currentClient);
       }
     }
   }
