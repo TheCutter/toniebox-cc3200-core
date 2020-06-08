@@ -63,11 +63,8 @@ public:
 
     boolean sslIsVerified;
     IPAddress remoteIP();
-<<<<<<< HEAD
 
     bool isSse;
-=======
->>>>>>> 31a67c253dcf94e53f69586d3efa55ba04b27fee
     
 protected:
     int _socketIndex;
