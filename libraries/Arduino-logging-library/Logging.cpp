@@ -1,6 +1,6 @@
 #include "Logging.h"
 
-void Logging::init(int level, long baud){
+void Logging::init(int level, long baud) {
     _level = constrain(level,LOG_LEVEL_NOOUTPUT,LOG_LEVEL_VERBOSE);
     _baud = baud;
     Serial.begin(_baud);
@@ -8,7 +8,7 @@ void Logging::init(int level, long baud){
 	HardwareSerial &serial = Serial;
 	_stream = &static_cast<Stream&>(serial);
 	
-	info("Start logging");
+	info("Start logging, additionalLogger=%i", _additionalLogger);
 }
 void Logging::init(int level, long baud, Stream* additionalLogger) {
 	setAdditionalLogger(additionalLogger);
@@ -63,8 +63,9 @@ void Logging::print(const char *msg) {
 }
 void Logging::printFormat(const char *format, va_list args) {
 	printFormat(_stream, format, args);
-	if (_additionalLogger != 0)
+	if (_additionalLogger != 0) {
 		printFormat(_additionalLogger, format, args);
+	}
 }
 
 void Logging::printFormat(Stream *stream, const char *format, va_list args) {
