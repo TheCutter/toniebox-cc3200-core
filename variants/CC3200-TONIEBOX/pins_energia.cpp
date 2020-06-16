@@ -49,6 +49,7 @@ void PinMuxConfig() {
     MAP_PinTypeSPI(PIN_05, PIN_MODE_7); //GSPI_CLK / TODO: MAP_PinTypeSPI
     MAP_PinTypeSPI(PIN_06, PIN_MODE_7); //GSPI_MISO
     MAP_PinTypeSPI(PIN_07, PIN_MODE_7); //GSPI_MOSI
+    MAP_PinTypeSPI(PIN_16, PIN_MODE_0); //SPI SS
     MAP_PinModeSet(PIN_18, PIN_MODE_0); //RFID IRQ
 
     MAP_PinTypeI2S(PIN_50, PIN_MODE_4); //I2S Data0 (DIN)

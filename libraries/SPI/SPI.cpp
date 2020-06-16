@@ -42,11 +42,11 @@ static const unsigned long g_ulSSIPeriph[] = {
 //
 //*****************************************************************************
 static const unsigned long g_ulSSIPins[][4] = {
-	{PIN_05 /* SCLK */, PIN_08 /* SS */, PIN_06 /* MISO */, PIN_07 /* MOSI */}
+	{PIN_05 /* SCLK */, PIN_16 /* SS */, PIN_06 /* MISO */, PIN_07 /* MOSI */}
 };
 
 static const unsigned long g_ulSSIPinModes[][4] = {
-	{PIN_MODE_7 /* SCLK */, PIN_MODE_7 /* SS */, PIN_MODE_7 /* MISO */, PIN_MODE_7 /* MOSI */}
+	{PIN_MODE_7 /* SCLK */, PIN_MODE_0 /* SS */, PIN_MODE_7 /* MISO */, PIN_MODE_7 /* MOSI */}
 };
 
 SPIClass::SPIClass(void) {
