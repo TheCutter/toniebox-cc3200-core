@@ -15,6 +15,8 @@
 #include "driverlib/i2c.h"
 #include "Wire.h"
 
+#include <Logging.h>
+
 #define I2C_BASE I2CA0_BASE
 
 #define TX_BUFFER_EMPTY    (txReadIndex == txWriteIndex)
@@ -90,6 +92,7 @@ uint8_t TwoWire::I2CTransact(unsigned long ulCmd)
 			break;
 		}
 
+		Log.error("I2CTransact error=%l", error);
 		return -1;
 	}
 	return 0;
