@@ -31,7 +31,7 @@
 #ifndef Pins_Energia_h
 #define Pins_Energia_h
 
-#define TARGET_IS_CC3101 1
+#define TARGET_IS_CC3101 0
 
 #ifndef BV
 #define BV(x) (1 << (x)) 
