@@ -2,6 +2,7 @@
 #define Energia_h 
 
 #define __CC3200R1M1RGC__
+#define CC3200
 
 #include <stdint.h>
 #include <stdbool.h> 

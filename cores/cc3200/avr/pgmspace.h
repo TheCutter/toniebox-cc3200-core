@@ -28,6 +28,7 @@ typedef uint32_t prog_uint32_t;
 #define strstr_P(a, b) strstr((a), (b))
 #define strlen_P(a) strlen((a))
 #define sprintf_P(s, f, ...) sprintf((s), (f), __VA_ARGS__)
+#define strncpy_P strncpy
 
 #define pgm_read_byte(addr) (*(const unsigned char *)(addr))
 #define pgm_read_word(addr) (*(const unsigned short *)(addr))
