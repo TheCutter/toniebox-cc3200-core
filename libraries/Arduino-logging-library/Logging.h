@@ -83,6 +83,7 @@ public:
 	void init(int level, long baud);
 	void init(int level, long baud, Stream* additionalLogger);
 	void setAdditionalLogger(Stream* additionalLogger);
+	void enableAdditionalLogger(bool enabled);
 	
     /**
 	* Output an error message. Output message contains
@@ -138,6 +139,7 @@ private:
 	
 	Stream* _stream;
 	Stream* _additionalLogger;
+	bool _enableAdditionalLogger;
 };
 
 extern Logging Log;

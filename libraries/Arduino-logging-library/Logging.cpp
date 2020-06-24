@@ -11,6 +11,7 @@ void Logging::init(int level, long baud) {
 	info("Start logging, additionalLogger=%i", _additionalLogger);
 }
 void Logging::init(int level, long baud, Stream* additionalLogger) {
+	_enableAdditionalLogger = true;
 	setAdditionalLogger(additionalLogger);
 	init(level, baud);
 }
@@ -58,12 +59,12 @@ void Logging::verbose(const char* msg, ...){
 
 void Logging::print(const char *msg) {
 	_stream->print(msg);
-	if (_additionalLogger != 0)
+	if (_enableAdditionalLogger && _additionalLogger != 0)
 		_additionalLogger->print(msg);
 }
 void Logging::printFormat(const char *format, va_list args) {
 	printFormat(_stream, format, args);
-	if (_additionalLogger != 0) {
+	if (_enableAdditionalLogger && _additionalLogger != 0) {
 		printFormat(_additionalLogger, format, args);
 	}
 }
@@ -142,6 +143,11 @@ void Logging::printFormat(Stream *stream, const char *format, va_list args) {
     }
     stream->println();
  }
+
+
+void Logging::enableAdditionalLogger(bool enabled) {
+	_enableAdditionalLogger = enabled;
+}
  
  
 
