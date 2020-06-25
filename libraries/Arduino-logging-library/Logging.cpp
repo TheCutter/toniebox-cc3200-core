@@ -57,6 +57,13 @@ void Logging::verbose(const char* msg, ...){
     }
 }
 
+void Logging::println() {
+	print("\r\n");
+}
+void Logging::println(const char *msg) {
+	print(msg);
+	println();
+}
 void Logging::print(const char *msg) {
 	_stream->print(msg);
 	if (_enableAdditionalLogger && _additionalLogger != 0)

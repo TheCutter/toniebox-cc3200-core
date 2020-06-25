@@ -133,6 +133,8 @@ public:
     void verbose(const char* msg, ...);   
     
 private:
+    void println();
+    void println(const char *msg);
     void print(const char *msg);
     void printFormat(const char *format, va_list args);
     void printFormat(Stream *stream, const char *format, va_list args);
