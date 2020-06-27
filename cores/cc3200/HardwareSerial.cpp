@@ -56,9 +56,9 @@
 
 #define UART_BASE g_ulUARTBase[uartModule]
 
-static const unsigned long g_ulUARTBase[2] =
+static const unsigned long g_ulUARTBase[3] =
 {
-	UARTA0_BASE, UARTA1_BASE
+	UARTA0_BASE, UARTA0_BASE, UARTA1_BASE
 };
 
 //*****************************************************************************
@@ -66,9 +66,9 @@ static const unsigned long g_ulUARTBase[2] =
 // The list of possible interrupts for the console UART.
 //
 //*****************************************************************************
-static const unsigned long g_ulUARTInt[2] =
+static const unsigned long g_ulUARTInt[3] =
 {
-	INT_UARTA0, INT_UARTA1
+	INT_UARTA0, INT_UARTA0, INT_UARTA1
 };
 
 //*****************************************************************************
@@ -76,9 +76,9 @@ static const unsigned long g_ulUARTInt[2] =
 // The list of UART pin modes.
 //
 //*****************************************************************************
-static const unsigned long g_ulUARTPinmode[2] =
+static const unsigned long g_ulUARTPinmode[3][2] =
 {
-	PIN_MODE_3, PIN_MODE_7
+	{ PIN_MODE_9, PIN_MODE_3 }, { PIN_MODE_3, PIN_MODE_3 }, { PIN_MODE_7, PIN_MODE_7 }
 };
 
 //*****************************************************************************
@@ -86,9 +86,9 @@ static const unsigned long g_ulUARTPinmode[2] =
 // The list of UART peripherals.
 //
 //*****************************************************************************
-static const unsigned long g_ulUARTPeriph[2] =
+static const unsigned long g_ulUARTPeriph[3] =
 {
-	PRCM_UARTA0, PRCM_UARTA1
+	PRCM_UARTA0, PRCM_UARTA0, PRCM_UARTA1
 };
 
 //*****************************************************************************
@@ -96,9 +96,9 @@ static const unsigned long g_ulUARTPeriph[2] =
 // The list of UART GPIO configurations.
 //
 //*****************************************************************************
-static const unsigned long g_ulUARTConfig[2][2] =
+static const unsigned long g_ulUARTConfig[3][2] =
 {
-	{PIN_57, PIN_55}, {PIN_02, PIN_01}
+	{PIN_45, PIN_55}, {PIN_57, PIN_55}, {PIN_02, PIN_01}
 };
 
 void (*g_UARTIntHandlers[2])(void) =
@@ -190,8 +190,8 @@ void HardwareSerial::begin(unsigned long baud)
 
 	MAP_PRCMPeripheralClkEnable(g_ulUARTPeriph[uartModule], PRCM_RUN_MODE_CLK);
 
-	MAP_PinTypeUART(g_ulUARTConfig[uartModule][0], g_ulUARTPinmode[uartModule]);
-	MAP_PinTypeUART(g_ulUARTConfig[uartModule][1], g_ulUARTPinmode[uartModule]);
+	MAP_PinTypeUART(g_ulUARTConfig[uartModule][0], g_ulUARTPinmode[uartModule][0]);
+	MAP_PinTypeUART(g_ulUARTConfig[uartModule][1], g_ulUARTPinmode[uartModule][1]);
 
 	MAP_UARTConfigSetExpClk(UART_BASE, 80000000, baudRate,
 				(UART_CONFIG_PAR_NONE | UART_CONFIG_STOP_ONE |
