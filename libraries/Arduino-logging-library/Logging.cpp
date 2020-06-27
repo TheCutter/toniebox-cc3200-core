@@ -25,6 +25,7 @@ void Logging::error(const char* msg, ...){
         va_list args;
         va_start(args, msg);
         printFormat(msg, args);
+		println();
     }
 }
 
@@ -35,6 +36,7 @@ void Logging::info(const char* msg, ...){
         va_list args;
         va_start(args, msg);
         printFormat(msg,args);
+		println();
     }
 }
 
@@ -44,9 +46,9 @@ void Logging::debug(const char* msg, ...){
         va_list args;
         va_start(args, msg);
         printFormat(msg,args);
+		println();
     }
 }
-
 
 void Logging::verbose(const char* msg, ...){
     if (LOG_LEVEL_VERBOSE <= _level) {
@@ -54,9 +56,9 @@ void Logging::verbose(const char* msg, ...){
         va_list args;
         va_start(args, msg);
         printFormat(msg,args);
+		println();
     }
 }
-
 void Logging::println() {
 	print("\r\n");
 }
@@ -64,10 +66,21 @@ void Logging::println(const char *msg) {
 	print(msg);
 	println();
 }
+void Logging::printfln(const char *msg, ...) {
+	va_list args;
+	va_start(args, msg);
+	printFormat(msg, args);
+	println();
+}
 void Logging::print(const char *msg) {
 	_stream->print(msg);
 	if (_enableAdditionalLogger && _additionalLogger != 0)
 		_additionalLogger->print(msg);
+}
+void Logging::printf(const char* msg, ...){
+	va_list args;
+	va_start(args, msg);
+	printFormat(msg, args);
 }
 void Logging::printFormat(const char *format, va_list args) {
 	printFormat(_stream, format, args);
@@ -148,7 +161,6 @@ void Logging::printFormat(Stream *stream, const char *format, va_list args) {
         }
         stream->print(*format);
     }
-    stream->println();
  }
 
 

@@ -134,7 +134,9 @@ public:
 	
     void println();
     void println(const char *msg);
+    void printfln(const char* msg, ...);
     void print(const char *msg);
+    void printf(const char* msg, ...);
     
 private:
     void printFormat(const char *format, va_list args);
