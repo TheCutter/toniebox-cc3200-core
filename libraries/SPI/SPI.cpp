@@ -78,7 +78,7 @@ void SPIClass::begin() {
 	MAP_PRCMPeripheralReset(PRCM_GSPI);
 	MAP_SPIReset(SSIBASE);
 
-	/* 4 MHz clock, MODE 0, 3 PIN with CS under S/W control */
+	/* 1 MHz clock, MODE 0, 3 PIN with CS under S/W control */
 	MAP_SPIConfigSetExpClk(SSIBASE,MAP_PRCMPeripheralClockGet(PRCM_GSPI),
 				1000000, SPI_MODE_MASTER, SPI_MODE0,
 				(SPI_HW_CTRL_CS |
