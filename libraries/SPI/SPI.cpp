@@ -80,7 +80,7 @@ void SPIClass::begin() {
 
 	/* 4 MHz clock, MODE 0, 3 PIN with CS under S/W control */
 	MAP_SPIConfigSetExpClk(SSIBASE,MAP_PRCMPeripheralClockGet(PRCM_GSPI),
-				4000000, SPI_MODE_MASTER, SPI_MODE0,
+				1000000, SPI_MODE_MASTER, SPI_MODE0,
 				(SPI_HW_CTRL_CS |
 				SPI_3PIN_MODE |
 				SPI_TURBO_OFF |
