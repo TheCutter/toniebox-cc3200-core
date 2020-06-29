@@ -336,6 +336,16 @@ public:
 
     friend class WiFiClient;
     friend class WiFiServer;
+
+    typedef struct {
+        char wifiName[32];
+        uint16_t wifiNameLen;
+        uint8_t mac[6];
+        SlSecParams_t secParams;
+        SlGetSecParamsExt_t secExtParams;
+        uint32_t priority;
+    } WlanProfile;
+    void getSavedProfiles(WlanProfile* profiles);
 };
 
 extern WiFiClass WiFi;

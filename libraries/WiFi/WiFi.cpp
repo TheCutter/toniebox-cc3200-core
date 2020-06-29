@@ -1190,6 +1190,24 @@ MACAddress WiFiClass::deviceMacByIpAddress(IPAddress ip)
     return MACADDR_NONE;
 }
 
+void WiFiClass::getSavedProfiles(WlanProfile* profiles) {
+    if (!_initialized) {
+        init();
+    }
+    for (int16_t i=0; i<7; i++) {
+        if (sl_WlanProfileGet(
+            i,
+            (_i8 *)&(profiles[i].wifiName),
+            (_i16*)&(profiles[i].wifiNameLen),
+            (_u8 *)&(profiles[i].mac),
+            &(profiles[i].secParams),
+            &(profiles[i].secExtParams),
+            (_u32 *)&(profiles[i].priority)
+        )==-1) {
+            profiles[i].wifiName[0] = '\0';
+        }
+    }
+}
 
 
 WiFiClass WiFi;
