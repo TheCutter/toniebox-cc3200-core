@@ -82,7 +82,7 @@ void SPIClass::begin() {
 	MAP_SPIConfigSetExpClk(SSIBASE,MAP_PRCMPeripheralClockGet(PRCM_GSPI),
 				1000000, SPI_MODE_MASTER, SPI_MODE0,
 				(SPI_HW_CTRL_CS |
-				SPI_3PIN_MODE |
+				SPI_4PIN_MODE |
 				SPI_TURBO_OFF |
 				SPI_CS_ACTIVELOW |
 				SPI_WL_8));
