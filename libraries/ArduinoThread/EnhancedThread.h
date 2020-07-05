@@ -16,7 +16,7 @@ class EnhancedThread : public Thread {
       setRunOnce(bool);
     
     #ifdef USE_THREAD_NAMES
-    void setName(String name);
+    void setName(const char* name);
     #endif
 
     unsigned long getInterval(void);

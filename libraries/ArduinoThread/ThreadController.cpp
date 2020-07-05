@@ -10,9 +10,7 @@ ThreadController::ThreadController(unsigned long _interval): Thread(){
 	setInterval(_interval);
 
 	#ifdef USE_THREAD_NAMES
-		// Overrides name
-		ThreadName = "ThreadController ";
-		ThreadName = ThreadName + ThreadID;
+		sprintf((char*)ThreadName, "ThreadController");
 	#endif
 }
 
@@ -48,7 +46,7 @@ bool ThreadController::add(Thread* _thread){
 	for(int i = 0; i < MAX_THREADS; i++){
 		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID) {
 			#ifdef USE_THREAD_NAMES
-			Log.debug("Thread %s already added to thread controller.", _thread->ThreadName.c_str());
+			Log.debug("Thread %s already added to thread controller.", _thread->ThreadName);
 			#else
 			Log.info("Thread already added to thread controller.");
 			#endif
@@ -63,7 +61,7 @@ bool ThreadController::add(Thread* _thread){
 			thread[i] = _thread;
 			cached_size++;
 			#ifdef USE_THREAD_NAMES
-			Log.debug("Added thread %s to thread controller.", thread[i]->ThreadName.c_str());
+			Log.debug("Added thread %s to thread controller.", thread[i]->ThreadName);
 			#else
 			Log.debug("Added thread %i to thread controller.", i);
 			#endif
@@ -71,7 +69,7 @@ bool ThreadController::add(Thread* _thread){
 		}
 	}
 	#ifdef USE_THREAD_NAMES
-	Log.debug("Thread %s not added to thread controller, please increase MAX_THREADS (%i).", _thread->ThreadName.c_str(), MAX_THREADS);
+	Log.debug("Thread %s not added to thread controller, please increase MAX_THREADS (%i).", _thread->ThreadName, MAX_THREADS);
 	#else
 	Log.debug("Thread not added to thread controller, please increase MAX_THREADS (%i).", MAX_THREADS);
 	#endif

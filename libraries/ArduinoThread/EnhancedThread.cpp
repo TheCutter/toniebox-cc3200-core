@@ -30,9 +30,9 @@ void EnhancedThread:: resetStats() {
 }
 void EnhancedThread::logStats() {
   #ifdef USE_THREAD_NAMES
-  Log.info("Thread statistics for %s", Thread::ThreadName.c_str());
+  Log.info("Thread statistics for %s", ThreadName);
   #else
-  Log.info("Thread statistics for %i", Thread::ThreadID);
+  Log.info("Thread statistics for %i", ThreadID);
   #endif
   Log.info(" Inverval %ims", interval);
   Log.info(" Min. %ims", stats.min);
@@ -47,8 +47,8 @@ void EnhancedThread::logStats() {
 }
 
 #ifdef USE_THREAD_NAMES
-void EnhancedThread::setName(String name) {
-  Thread::ThreadName = name + " (" + ThreadID + ")";
+void EnhancedThread::setName(const char* name) {
+  sprintf(ThreadName, "%s (%i)", name, ThreadID);
 }
 #endif
 

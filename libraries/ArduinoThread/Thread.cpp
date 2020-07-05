@@ -15,8 +15,7 @@ void Thread::_prepare(unsigned long _interval) {
 
 	ThreadID = (int)this;
 	#ifdef USE_THREAD_NAMES
-		ThreadName = "Thread ";
-		ThreadName = ThreadName + ThreadID;
+		sprintf(ThreadName, "Thread %u", ThreadID);
 	#endif
 
 	setInterval(_interval);
