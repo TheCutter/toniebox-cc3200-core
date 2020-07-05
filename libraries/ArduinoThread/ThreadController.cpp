@@ -47,7 +47,11 @@ bool ThreadController::add(Thread* _thread){
 	// Check if the Thread already exists on the array
 	for(int i = 0; i < MAX_THREADS; i++){
 		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID) {
+			#ifdef USE_THREAD_NAMES
+			Log.debug("Thread %s already added to thread controller.", _thread->ThreadName.c_str());
+			#else
 			Log.info("Thread already added to thread controller.");
+			#endif
 			//return true;
 		}
 	}
@@ -58,12 +62,19 @@ bool ThreadController::add(Thread* _thread){
 			// Found a empty slot, now add Thread
 			thread[i] = _thread;
 			cached_size++;
+			#ifdef USE_THREAD_NAMES
+			Log.debug("Added thread %s to thread controller.", thread[i]->ThreadName.c_str());
+			#else
 			Log.debug("Added thread %i to thread controller.", i);
+			#endif
 			return true;
 		}
 	}
-
+	#ifdef USE_THREAD_NAMES
+	Log.debug("Thread %s not added to thread controller, please increase MAX_THREADS (%i).", _thread->ThreadName.c_str(), MAX_THREADS);
+	#else
 	Log.debug("Thread not added to thread controller, please increase MAX_THREADS (%i).", MAX_THREADS);
+	#endif
 	// Array is full
 	return false;
 }
