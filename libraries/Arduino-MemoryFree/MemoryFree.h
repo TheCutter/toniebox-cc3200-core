@@ -7,7 +7,6 @@
 
 const int MEMORY_START = 0x20004000;
 const int MEMORY_END = MEMORY_START + 0x3C000;
-const int MEMORY_STACK_SIZE = 0x2000*4; //8192x4 see startup_gcc
 
 int freeMemory();
 int freeStackMemory();

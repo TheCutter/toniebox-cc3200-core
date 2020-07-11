@@ -8,7 +8,7 @@ int freeMemory() {
   return freeStackMemory() + freeHeapMemory();
 }
 int freeStackMemory() {
-  return MEMORY_STACK_SIZE - (stackPointer()-getStackPointerFromStartupgcc());
+  return (stackPointer()-getStackPointerFromStartupgcc());
 }
 int freeHeapMemory() {
   return MEMORY_END - heapPointer(); //Heap grows to the end of the mem
