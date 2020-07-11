@@ -6,5 +6,7 @@
 #define MEMORY_FREE_H
 
 int freeMemory();
+int stackPointer();
+int heapPointer();
 
 #endif
