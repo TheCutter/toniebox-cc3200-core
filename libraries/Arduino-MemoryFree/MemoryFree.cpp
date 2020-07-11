@@ -1,14 +1,14 @@
 #include "MemoryFree.h"
 
 extern "C" char* _sbrk(int incr);
+extern "C" int getStackPointerFromStartupgcc();
 
 int freeMemory() {
   //return stackPointer() - heapPointer();
   return freeStackMemory() + freeHeapMemory();
 }
 int freeStackMemory() {
-  return 0; //TODO max size defined in startup_gcc.c,
-  //Seems to be in heap with fixed size of 8192 * 4 bytes
+  return MEMORY_STACK_SIZE - (stackPointer()-getStackPointerFromStartupgcc());
 }
 int freeHeapMemory() {
   return MEMORY_END - heapPointer(); //Heap grows to the end of the mem

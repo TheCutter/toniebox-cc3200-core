@@ -407,6 +407,10 @@ void * _sbrk(unsigned int incr)
 
 }
 
+int getStackPointerFromStartupgcc() {
+    return (int)pui32Stack;
+}
+
 __attribute__((weak))
 extern int link( char *cOld, char *cNew )
 {
