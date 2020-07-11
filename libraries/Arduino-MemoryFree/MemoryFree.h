@@ -5,7 +5,13 @@
 #ifndef	MEMORY_FREE_H
 #define MEMORY_FREE_H
 
+const int MEMORY_START = 0x20004000;
+const int MEMORY_END = MEMORY_START + 0x3C000;
+
 int freeMemory();
+int freeStackMemory();
+int freeHeapMemory();
+
 int stackPointer();
 int heapPointer();
 

@@ -3,9 +3,17 @@
 extern "C" char* _sbrk(int incr);
 
 int freeMemory() {
-  char top;
-  return stackPointer() - heapPointer();
+  //return stackPointer() - heapPointer();
+  return freeStackMemory() + freeHeapMemory();
 }
+int freeStackMemory() {
+  return 0; //TODO max size defined in startup_gcc.c,
+  //Seems to be in heap with fixed size of 8192 * 4 bytes
+}
+int freeHeapMemory() {
+  return MEMORY_END - heapPointer(); //Heap grows to the end of the mem
+}
+
 int stackPointer() {
   char top;
   return (int)&top;
