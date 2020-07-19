@@ -48,7 +48,7 @@ void EnhancedThread::logStats() {
 
 #ifdef USE_THREAD_NAMES
 void EnhancedThread::setName(const char* name) {
-  sprintf(ThreadName, "%s (%i)", name, ThreadID);
+  sprintf(ThreadName, "%s (0x%X)", name, ThreadID);
 }
 #endif
 
