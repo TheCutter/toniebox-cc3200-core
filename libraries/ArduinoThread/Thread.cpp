@@ -36,6 +36,9 @@ void Thread::setInterval(unsigned long _interval){
 	// Cache the next run based on the last_run
 	_cached_next_run = last_run + interval;
 }
+unsigned long Thread::getInterval() {
+	return interval;
+}
 
 bool Thread::shouldRun(unsigned long time){
 	// If the "sign" bit is set the signed difference would be negative

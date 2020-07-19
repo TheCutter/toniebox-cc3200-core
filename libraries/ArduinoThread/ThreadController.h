@@ -48,6 +48,8 @@ public:
 	// Return the I Thread on the array
 	// Returns NULL if none found
 	Thread* get(int index);
+
+	void sortThreads();
 };
 
 #endif

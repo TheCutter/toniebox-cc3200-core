@@ -126,3 +126,13 @@ Thread* ThreadController::get(int index){
 
 	return NULL;
 }
+
+int compare(const void* a, const void* b) {
+	Thread* threadA = (Thread*)a;
+	Thread* threadB = (Thread*)b;
+	return (threadA->getInterval() - threadB->getInterval());
+}
+void ThreadController::sortThreads() {
+	int elmSize = sizeof(thread[0]); 
+	qsort(thread, size(), elmSize, compare);
+}

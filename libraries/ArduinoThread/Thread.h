@@ -76,6 +76,7 @@ public:
 
 	// Set the desired interval for calls, and update _cached_next_run
 	virtual void setInterval(unsigned long _interval);
+	unsigned long getInterval();
 
 	// Return if the Thread should be runned or not
 	virtual bool shouldRun(unsigned long time);
