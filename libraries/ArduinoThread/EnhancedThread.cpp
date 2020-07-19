@@ -3,18 +3,31 @@
 
 void EnhancedThread::run() {
   unsigned long before_run = millis();
+  unsigned long before_last_run = last_run;
   Thread::run();
   if (_runOnce)
     Thread::enabled = false;
-  unsigned long delta = millis() - before_run;
+  unsigned long after_run = millis();
   
-  if (delta < stats.min)
-    stats.min = delta;
-  if (delta > stats.max)
-    stats.max = delta;
+  unsigned long runtime = after_run - before_run;
+  if (runtime < stats.min)
+    stats.min = runtime;
+  if (runtime > stats.max)
+    stats.max = runtime;
   memmove(&stats.samples[1], &stats.samples[0], (STAT_SAMPLES-1)*2);
-  stats.samples[0] = delta;
-  
+  stats.samples[0] = runtime;
+
+  if (!_firstIntervalSample) {
+    unsigned long calcInterval = before_run - before_last_run;
+    if (calcInterval < stats.minInterval)
+      stats.minInterval = calcInterval;
+    if (calcInterval > stats.maxInterval)
+      stats.maxInterval = calcInterval;
+    memmove(&stats.samplesInterval[1], &stats.samplesInterval[0], (STAT_SAMPLES_INTERVAL-1)*2);
+    stats.samplesInterval[0] = calcInterval;
+  } else {
+    _firstIntervalSample = false;
+  }
 }
 
 void EnhancedThread::runIfNeeded(void) {
@@ -27,6 +40,11 @@ void EnhancedThread:: resetStats() {
   stats.max = 0;
   for (uint8_t i=0; i<STAT_SAMPLES; i++)
     stats.samples[i] = 0;
+
+  stats.minInterval = UINT16_MAX;
+  stats.maxInterval = 0;
+  for (uint8_t i=0; i<STAT_SAMPLES_INTERVAL; i++)
+    stats.samplesInterval[i] = 0;
 }
 void EnhancedThread::logStats() {
   #ifdef USE_THREAD_NAMES
@@ -39,9 +57,14 @@ void EnhancedThread::logStats() {
   Log.info(" Max. %ims", stats.max);
   Log.info(" Samples:");
   for (uint8_t i=0; i<STAT_SAMPLES; i++) {
-    //if (stats.samples[i] == 0)
-    //  break;
     Log.printf("[%i] %ims, ", i, stats.samples[i]);
+  }
+  Log.println();
+  Log.info(" Interval min. %ims", stats.minInterval);
+  Log.info(" Interval max. %ims", stats.maxInterval);
+  Log.info(" Interval samples:");
+  for (uint8_t i=0; i<STAT_SAMPLES_INTERVAL; i++) {
+    Log.printf("[%i] %ims, ", i, stats.samplesInterval[i]);
   }
   Log.println();
 }
