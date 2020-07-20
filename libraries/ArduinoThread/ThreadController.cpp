@@ -143,11 +143,11 @@ int compare(const void* a, const void* b) {
 	 else if (threadA->priority > threadB->priority)
 		return 1;
 	
-	/*
+	
 	if (threadA->getInterval() < threadB->getInterval())
 		return -1;
 	 else if (threadA->getInterval() > threadB->getInterval())
-		return 1;*/
+		return 1;
 	
 	return 0;
 }
