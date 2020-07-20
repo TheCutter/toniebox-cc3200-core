@@ -48,24 +48,29 @@ void EnhancedThread:: resetStats() {
 }
 void EnhancedThread::logStats() {
   #ifdef USE_THREAD_NAMES
-  Log.info("Thread statistics for %s", ThreadName);
+  Log.info("Thread statistics for %s, priority=%i, interval=%i", ThreadName, priority, interval);
   #else
-  Log.info("Thread statistics for %i", ThreadID);
+  Log.info("Thread statistics for %i, priority=%i, interval=%i", ThreadID, priority, interval);
   #endif
-  Log.info(" Inverval %ims", interval);
-  Log.info(" Min. %ims", stats.min);
-  Log.info(" Max. %ims", stats.max);
-  Log.info(" Samples:");
+  Log.info(" #Measured runtime#");
+  Log.info("  Min. %ims", stats.min);
+  Log.info("  Max. %ims", stats.max);
+  Log.disableNewline(true);
+  Log.info("  Samples: ");
   for (uint8_t i=0; i<STAT_SAMPLES; i++) {
-    Log.printf("[%i] %ims, ", i, stats.samples[i]);
+    Log.printf(" [%i] %ims,", i, stats.samples[i]);
   }
+  Log.disableNewline(false);
   Log.println();
-  Log.info(" Interval min. %ims", stats.minInterval);
-  Log.info(" Interval max. %ims", stats.maxInterval);
-  Log.info(" Interval samples:");
+  Log.info(" #Measured interval#");
+  Log.info("  Min. %ims", stats.minInterval);
+  Log.info("  Max. %ims", stats.maxInterval);
+  Log.disableNewline(true);
+  Log.info("  Samples:");
   for (uint8_t i=0; i<STAT_SAMPLES_INTERVAL; i++) {
-    Log.printf("[%i] %ims, ", i, stats.samplesInterval[i]);
+    Log.printf(" [%i] %ims,", i, stats.samplesInterval[i]);
   }
+  Log.disableNewline(false);
   Log.println();
 }
 

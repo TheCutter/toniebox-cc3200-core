@@ -128,11 +128,29 @@ Thread* ThreadController::get(int index){
 }
 
 int compare(const void* a, const void* b) {
-	Thread* threadA = (Thread*)a;
-	Thread* threadB = (Thread*)b;
-	return (threadA->getInterval() - threadB->getInterval());
+	if (a == NULL && b == NULL)
+		return 0;
+	if (a == NULL && b != NULL)
+		return -1;
+	if (a != NULL && b == NULL)
+		return 1;
+
+	Thread* threadA = *(Thread**)a;
+	Thread* threadB = *(Thread**)b;
+
+	if (threadA->priority < threadB->priority)
+		return -1;
+	 else if (threadA->priority > threadB->priority)
+		return 1;
+	
+	/*
+	if (threadA->getInterval() < threadB->getInterval())
+		return -1;
+	 else if (threadA->getInterval() > threadB->getInterval())
+		return 1;*/
+	
+	return 0;
 }
 void ThreadController::sortThreads() {
-	int elmSize = sizeof(thread[0]); 
-	qsort(thread, size(), elmSize, compare);
+	qsort(thread, size(false), sizeof(*thread), compare);
 }
