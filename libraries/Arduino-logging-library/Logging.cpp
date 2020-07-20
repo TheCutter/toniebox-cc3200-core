@@ -7,6 +7,7 @@ void Logging::init(int level, long baud) {
 	
 	HardwareSerial &serial = Serial;
 	_stream = &static_cast<Stream&>(serial);
+	_disableNewline = false;
 	
 	info("Start logging, additionalLogger=%i", _additionalLogger);
 }
@@ -17,6 +18,9 @@ void Logging::init(int level, long baud, Stream* additionalLogger) {
 }
 void Logging::setAdditionalLogger(Stream* additionalLogger) {
 	_additionalLogger = additionalLogger;
+}
+void Logging::disableNewline(bool disabled) {
+	_disableNewline = disabled;
 }
 
 void Logging::error(const char* msg, ...){
@@ -60,7 +64,8 @@ void Logging::verbose(const char* msg, ...){
     }
 }
 void Logging::println() {
-	print("\r\n");
+	if (!_disableNewline)
+		print("\r\n");
 }
 void Logging::println(const char *msg) {
 	print(msg);
