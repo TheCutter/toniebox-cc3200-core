@@ -35,6 +35,9 @@
  * From:
 static char sccsid[] = "@(#)rand.c	8.1 (Berkeley) 6/14/93";
  */
+#define USE_CUSTOM_RANDOM
+#ifdef USE_CUSTOM_RANDOM
+
 #ifndef RANDOM_MAX
 #define RANDOM_MAX 0x7FFFFFFF
 #endif
@@ -88,3 +91,4 @@ srandom(unsigned long seed)
     next = seed;
 }
 
+#endif

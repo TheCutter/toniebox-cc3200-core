@@ -23,12 +23,17 @@
   $Id$
  */
 
+
+
 extern "C" {
 #include "stdlib.h"
 /* Using interal random and srandom in file random.c
  * until msp430-libc adds supports for random and srandom */
+#define USE_CUSTOM_RANDOM
+#ifdef USE_CUSTOM_RANDOM
 extern long random(void);
 extern void srandom(unsigned long __seed);
+#endif
 }
 
 void randomSeed(unsigned int seed)

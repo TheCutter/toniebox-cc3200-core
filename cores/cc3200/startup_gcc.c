@@ -467,10 +467,14 @@ extern int _getpid ( void )
     return -1 ;
 }
 
-/*
 __attribute__((weak))
 extern void _exit (void)
 {
 
 }
-*/
+
+__attribute__((weak))
+extern void _fini (void)
+{
+
+}
