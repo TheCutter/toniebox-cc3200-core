@@ -8,7 +8,8 @@ void EnhancedThread::run() {
   if (_runOnce)
     Thread::enabled = false;
   unsigned long after_run = millis();
-  
+
+  #ifdef FEATURE_FLAG_THREADSTATS
   unsigned long runtime = after_run - before_run;
   if (runtime < loopStats.min)
     loopStats.min = runtime;
@@ -28,6 +29,7 @@ void EnhancedThread::run() {
   } else {
     _firstIntervalSample = false;
   }
+  #endif
 }
 
 void EnhancedThread::runIfNeeded(void) {
@@ -36,6 +38,7 @@ void EnhancedThread::runIfNeeded(void) {
 }
 
 void EnhancedThread::resetStats() {
+  #ifdef FEATURE_FLAG_THREADSTATS
   loopStats.min = UINT16_MAX;
   loopStats.max = 0;
   for (uint8_t i=0; i<STAT_SAMPLES; i++)
@@ -56,6 +59,7 @@ void EnhancedThread::resetStats() {
     memStats.samplesStackFree[i][0] = UINT16_MAX;
     memStats.samplesStackFree[i][1] = 0;
   }
+  #endif
 }
 void EnhancedThread::logStats() {
   #ifdef USE_THREAD_NAMES
@@ -63,6 +67,7 @@ void EnhancedThread::logStats() {
   #else
   Log.info("Thread statistics for %i, priority=%i, interval=%i", ThreadID, priority, interval);
   #endif
+  #ifdef FEATURE_FLAG_THREADSTATS
   Log.info(" #Measured runtime#");
   Log.info("  Min. %ims / Max. %ims", loopStats.min, loopStats.max);
   Log.disableNewline(true);
@@ -107,9 +112,13 @@ void EnhancedThread::logStats() {
   Log.disableNewline(false);
   Log.println();
   Log.print("------------------------------------------------------");
+  #else
+  Log.error("Thread stats not active (FEATURE_FLAG_THREADSTATS not set)");
+  #endif
 }
 
 void EnhancedThread::sampleMemory(uint8_t id) {
+  #ifdef FEATURE_FLAG_THREADSTATS
   uint16_t freeHeap = (uint16_t)freeHeapMemory();
   if (freeHeap<memStats.minHeapFree)
     memStats.minHeapFree = freeHeap;
@@ -136,6 +145,7 @@ void EnhancedThread::sampleMemory(uint8_t id) {
     Log.error("Sampling memory with invalid id %i not possible.", id);
   }
   //Log.info("Sample memory id=%i, heap=%i, stack=%i", id, freeHeap, freeStack);
+  #endif
 }
 
 #ifdef USE_THREAD_NAMES

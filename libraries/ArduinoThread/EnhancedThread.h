@@ -24,6 +24,7 @@ class EnhancedThread : public Thread {
 
     void resetStats();
     void logStats();
+    #ifdef FEATURE_FLAG_THREADSTATS
     const static uint8_t STAT_SAMPLES = 10;
     const static uint8_t STAT_SAMPLES_INTERVAL = 10;
     struct LOOP_STATS {
@@ -46,6 +47,7 @@ class EnhancedThread : public Thread {
       uint16_t samplesStackFree[STAT_SAMPLES][2];
     };
     MEMORY_STATS memStats;
+    #endif
     void sampleMemory(uint8_t id);
 
   private:
