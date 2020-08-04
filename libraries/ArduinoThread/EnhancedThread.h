@@ -2,6 +2,7 @@
 #define EnhancedThread_h
 
 #include <Thread.h>
+#include <MemoryFree.h>
 
 class EnhancedThread : public Thread {
   public:
@@ -33,7 +34,19 @@ class EnhancedThread : public Thread {
       uint16_t maxInterval;
       uint16_t samplesInterval[STAT_SAMPLES_INTERVAL];
     };
-    LOOP_STATS stats;
+    LOOP_STATS loopStats;
+
+    const static uint8_t STAT_SAMPLES_MEM = 10;
+    struct MEMORY_STATS {
+      uint16_t minHeapFree; 
+      uint16_t maxHeapFree;
+      uint16_t samplesHeapFree[STAT_SAMPLES][2];
+      uint16_t minStackFree;
+      uint16_t maxStackFree;
+      uint16_t samplesStackFree[STAT_SAMPLES][2];
+    };
+    MEMORY_STATS memStats;
+    void sampleMemory(uint8_t id);
 
   private:
     bool _runOnce;
