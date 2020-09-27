@@ -139,10 +139,10 @@ public:
     void printfln(const char* msg, ...);
     void print(const char *msg);
     void printf(const char* msg, ...);
-    
-private:
+
     void printFormat(const char *format, va_list args);
     void printFormat(Stream *stream, const char *format, va_list args);
+private:
 	
 	Stream* _stream;
 	Stream* _additionalLogger;
