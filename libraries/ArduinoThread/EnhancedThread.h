@@ -4,6 +4,8 @@
 #include <Thread.h>
 #include <MemoryFree.h>
 
+#define FEATURE_FLAG_THREADSTATS
+
 class EnhancedThread : public Thread {
   public:
     EnhancedThread(unsigned long _interval = 0)
