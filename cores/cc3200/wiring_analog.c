@@ -148,7 +148,7 @@ static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to)
         return value << (to-from);
 }
 
-#define NO_OF_SAMPLES 128
+#define NO_OF_SAMPLES 32
 unsigned long pulAdcSamples[4096];
 uint16_t analogRead(uint8_t pin)
 {
