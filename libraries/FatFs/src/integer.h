@@ -13,7 +13,7 @@ typedef unsigned __int64 QWORD;
 
 #else			/* Embedded platform */
 
-#include <arduino.h>
+#include <Arduino.h>
 
 /* This type MUST be 8 bit */
 typedef unsigned char   BYTE;
