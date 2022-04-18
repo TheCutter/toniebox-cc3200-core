@@ -35,7 +35,7 @@
  * From:
 static char sccsid[] = "@(#)rand.c	8.1 (Berkeley) 6/14/93";
  */
-#define USE_CUSTOM_RANDOM
+//#define USE_CUSTOM_RANDOM
 #ifdef USE_CUSTOM_RANDOM
 
 #ifndef RANDOM_MAX
