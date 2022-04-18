@@ -19,6 +19,7 @@
 
 // default loglevel if nothing is set from user
 #define LOGLEVEL LOG_LEVEL_VERBOSE 
+//#define LOG_DISABLED
 
 #define LOGGING_VERSION 1
 

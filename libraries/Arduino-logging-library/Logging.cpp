@@ -1,5 +1,23 @@
 #include "Logging.h"
 
+#ifdef LOG_DISABLED
+void Logging::init(int level, long baud) {}
+void Logging::init(int level, long baud, Stream* additionalLogger) {}
+void Logging::setAdditionalLogger(Stream* additionalLogger) {}
+void Logging::disableNewline(bool disabled) {}
+void Logging::error(const char* msg, ...){}
+void Logging::info(const char* msg, ...){}
+void Logging::debug(const char* msg, ...){}
+void Logging::verbose(const char* msg, ...){}
+void Logging::println() {}
+void Logging::println(const char *msg) {}
+void Logging::printfln(const char *msg, ...) {}
+void Logging::print(const char *msg) {}
+void Logging::printf(const char* msg, ...){}
+void Logging::printFormat(const char *format, va_list args) {}
+void Logging::printFormat(Stream *stream, const char *format, va_list args) {}
+void Logging::enableAdditionalLogger(bool enabled) {}
+#else
 void Logging::init(int level, long baud) {
     _level = constrain(level,LOG_LEVEL_NOOUTPUT,LOG_LEVEL_VERBOSE);
     _baud = baud;
@@ -173,9 +191,10 @@ void Logging::enableAdditionalLogger(bool enabled) {
 	_enableAdditionalLogger = enabled;
 }
  
- 
+#endif 
 
 Logging Log = Logging();
+
 
  
  
