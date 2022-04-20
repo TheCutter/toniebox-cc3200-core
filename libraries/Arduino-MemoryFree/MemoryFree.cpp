@@ -42,15 +42,6 @@ uint8_t* heapPointer() {
 }
 
 void setCanaries() {
-  uint32_t *heap_end = (uint32_t*)heapEnd();
-  uint32_t *heapPtr = (uint32_t*)heapPointer();
-
-  heap_end--;
-  while(heap_end>heapPtr) {
-    heap_end[0] = CANARY_HEAP;
-    heap_end -= 1;
-  }
-
   uint32_t *stack_end = (uint32_t*)stackEnd();
   uint32_t *stackPtr = (uint32_t*)stackPointer();
 
@@ -58,6 +49,15 @@ void setCanaries() {
   while(stack_end<stackPtr) {
     stack_end[0] = CANARY_STACK;
     stack_end += 1;
+  }
+  
+  uint32_t *heap_end = (uint32_t*)heapEnd();
+  uint32_t *heapPtr = (uint32_t*)heapPointer();
+
+  heap_end--;
+  while(heap_end>heapPtr) {
+    heap_end[0] = CANARY_HEAP;
+    heap_end -= 1;
   }
 }
 
