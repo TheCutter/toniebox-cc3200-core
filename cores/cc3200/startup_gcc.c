@@ -117,7 +117,31 @@ __attribute__((weak)) void I2CIntHandler(void) {}
 //
 //*****************************************************************************
 //static uint32_t pui32Stack[8192];
-static uint32_t pui32Stack[2048];
+//static uint32_t pui32Stack[2048];
+
+//*****************************************************************************
+//
+// The following are constructs created by the linker, indicating where the
+// the "data" and "bss" segments reside in memory.  The initializers for the
+// for the "data" segment resides immediately following the "text" segment.
+//
+//*****************************************************************************
+extern uint32_t _etext;
+//extern uint32_t _data;
+//extern uint32_t _edata;
+extern uint32_t _stack;
+extern uint32_t _estack;
+extern uint32_t _bss;
+extern uint32_t _ebss;
+//extern uint32_t __init_data;
+
+extern uint32_t _ringbuffer;
+extern uint32_t _eringbuffer;
+
+extern void (*__preinit_array_start[])(void);
+extern void (*__preinit_array_end[])(void);
+extern void (*__init_array_start[])(void);
+extern void (*__init_array_end[])(void);
 
 //*****************************************************************************
 //
@@ -128,8 +152,8 @@ static uint32_t pui32Stack[2048];
 __attribute__ ((section(".intvecs")))
 void (* const g_pfnVectors[256])(void) =
 {
-    (void (*)(void))((uint32_t)pui32Stack + sizeof(pui32Stack)),
-                                            // The initial stack pointer
+    //(void (*)(void))((uint32_t)pui32Stack + sizeof(pui32Stack)),
+    (void (*)(void))(&_estack),             // The initial stack pointer
     ResetISR,                               // The reset handler
     NmiSR,                                  // The NMI handler
     FaultISR,                               // The hard fault handler
@@ -213,25 +237,6 @@ void (* const g_pfnVectors[256])(void) =
 
 //*****************************************************************************
 //
-// The following are constructs created by the linker, indicating where the
-// the "data" and "bss" segments reside in memory.  The initializers for the
-// for the "data" segment resides immediately following the "text" segment.
-//
-//*****************************************************************************
-extern uint32_t _etext;
-extern uint32_t _data;
-extern uint32_t _edata;
-extern uint32_t _bss;
-extern uint32_t _ebss;
-extern uint32_t __init_data;
-
-extern void (*__preinit_array_start[])(void);
-extern void (*__preinit_array_end[])(void);
-extern void (*__init_array_start[])(void);
-extern void (*__init_array_end[])(void);
-
-//*****************************************************************************
-//
 // This is the code that gets called when the processor first starts execution
 // following a reset event.  Only the absolutely necessary set is performed,
 // after which the application supplied entry() routine is called.  Any fancy
@@ -243,7 +248,11 @@ extern void (*__init_array_end[])(void);
 void
 ResetISR(void)
 {
-    uint32_t *pui32Src, *pui32Dest;
+    //
+    // Set Stack pointer if loaded via debugger or just be sure it is set right.
+    //
+    __asm__("ldr sp, %0\n" :: "m" (g_pfnVectors[0]) );
+    //uint32_t *pui32Src, *pui32Dest;
 
     //
     // Copy the data segment initializers
@@ -409,10 +418,6 @@ void * _sbrk(unsigned int incr)
     //
     return prev_heap_end;
 
-}
-
-int getStackPointerFromStartupgcc() {
-    return (int)pui32Stack;
 }
 
 __attribute__((weak))

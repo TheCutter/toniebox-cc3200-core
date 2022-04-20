@@ -13,7 +13,9 @@
 *
 ******************************************************************************/
 
+STACK_SIZE = 0x2000;
 HEAP_SIZE = 0xC7F0;/*0x3BF0; /*Original Size: 0x00010000*/
+RAM_LOW_SIZE = 0x4000;
 
 MEMORY
 {
@@ -81,6 +83,13 @@ SECTIONS
         _edata = .;
     } > SRAM
 
+    .stack : {
+        _stack = .;
+        . = . + STACK_SIZE;
+        . = ALIGN(4);
+        _estack = .;
+    } > SRAM
+
     .bss :
     {
         _bss = .;
@@ -96,7 +105,14 @@ SECTIONS
 	. = ALIGN(8);
 	_eheap = .;
 
-    }
+    } > SRAM
+
+    .ringbuffer :
+    {
+        _ringbuffer = .;
+	    . = . + RAM_LOW_SIZE;
+        _eringbuffer = .;
+    } > SRAM_LOW
 }
 
 /*PROVIDE(end = _end);*/
