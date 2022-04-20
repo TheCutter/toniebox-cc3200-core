@@ -79,7 +79,7 @@ SECTIONS
     {
         _data = .;
         *(.data*)
-	. = ALIGN (8);
+	    . = ALIGN (8);
         _edata = .;
     } > SRAM
 
@@ -100,11 +100,10 @@ SECTIONS
 
     .heap :
     {
-	_heap = .;
-	. = . + HEAP_SIZE;
-	. = ALIGN(8);
-	_eheap = .;
-
+        _heap = .;
+        . = . + HEAP_SIZE;
+        . = ALIGN(8);
+        _eheap = .;
     } > SRAM
 
     .ringbuffer :
