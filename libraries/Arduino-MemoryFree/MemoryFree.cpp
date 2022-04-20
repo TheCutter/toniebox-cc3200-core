@@ -17,33 +17,33 @@ uint32_t freeHeapMemory() {
   return (uint32_t)(heapEnd() - heapPointer()); //Heap grows to the end of the mem
 }
 
-uint32_t* stackStart() {
-  return (uint32_t*)&_estack;
+uint8_t* stackStart() {
+  return (uint8_t*)&_estack;
 }
-uint32_t* heapStart() {
-  return (uint32_t*)&_heap;
+uint8_t* heapStart() {
+  return (uint8_t*)&_heap;
 }
-uint32_t* stackEnd() {
-  return (uint32_t*)&_stack;
+uint8_t* stackEnd() {
+  return (uint8_t*)&_stack;
 }
-uint32_t* heapEnd() {
-  return (uint32_t*)&_eheap;
+uint8_t* heapEnd() {
+  return (uint8_t*)&_eheap;
 }
 
-uint32_t* stackPointer() {
+uint8_t* stackPointer() {
   //char top;
   //return (uint32_t*)&top;
   register unsigned* stack_pointer;
   __asm__ volatile("mov %0, sp\n" : "=r" (stack_pointer) );
-  return (uint32_t*)stack_pointer;
+  return (uint8_t*)stack_pointer;
 }
-uint32_t* heapPointer() {
-  return (uint32_t*)reinterpret_cast<uint32_t>(_sbrk(0));
+uint8_t* heapPointer() {
+  return (uint8_t*)reinterpret_cast<uint32_t>(_sbrk(0));
 }
 
 void setCanaries() {
-  uint32_t *heap_end = heapEnd();
-  uint32_t *heapPtr = heapPointer();
+  uint32_t *heap_end = (uint32_t*)heapEnd();
+  uint32_t *heapPtr = (uint32_t*)heapPointer();
 
   heap_end--;
   while(heap_end>heapPtr) {
@@ -51,8 +51,8 @@ void setCanaries() {
     heap_end -= 4;
   }
 
-  uint32_t *stack_end = stackEnd();
-  uint32_t *stackPtr = stackPointer();
+  uint32_t *stack_end = (uint32_t*)stackEnd();
+  uint32_t *stackPtr = (uint32_t*)stackPointer();
 
   stack_end++;
   while(stack_end<stackPtr) {
@@ -62,20 +62,20 @@ void setCanaries() {
 }
 
 bool testStackCanary() {
-  uint32_t *stack_end = stackEnd();
+  uint32_t *stack_end = (uint32_t*)stackEnd();
   stack_end++;
   return (stack_end[0] == CANARY_STACK);
 }
 bool testHeapCanary() {
-  uint32_t *heap_end = heapEnd();
+  uint32_t *heap_end = (uint32_t*)heapEnd();
   heap_end--;
   return (heap_end[0] == CANARY_HEAP);
 }
 
 uint32_t countStackCanaries() {
   uint32_t canaries = 0;
-  uint32_t *stackPtr = stackPointer();
-  uint32_t *stack_end = stackEnd();
+  uint32_t *stackPtr = (uint32_t*)stackPointer();
+  uint32_t *stack_end = (uint32_t*)stackEnd();
   stack_end++;
 
   while (stack_end[0] == CANARY_STACK && stack_end < stackPtr) {
@@ -86,8 +86,8 @@ uint32_t countStackCanaries() {
 }
 uint32_t countHeapCanaries() {
   uint32_t canaries = 0;
-  uint32_t *heapPtr = heapPointer();
-  uint32_t *heap_end = heapEnd();
+  uint32_t *heapPtr = (uint32_t*)heapPointer();
+  uint32_t *heap_end = (uint32_t*)heapEnd();
   heap_end--;
 
   while (heap_end[0] == CANARY_HEAP && heap_end > heapPtr) {

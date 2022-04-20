@@ -15,14 +15,14 @@ uint32_t freeMemory();
 uint32_t freeStackMemory();
 uint32_t freeHeapMemory();
 
-uint32_t* stackStart();
-uint32_t* heapStart();
+uint8_t* stackStart();
+uint8_t* heapStart();
 
-uint32_t* stackEnd();
-uint32_t* heapEnd();
+uint8_t* stackEnd();
+uint8_t* heapEnd();
 
-uint32_t* stackPointer();
-uint32_t* heapPointer();
+uint8_t* stackPointer();
+uint8_t* heapPointer();
 
 void setCanaries();
 bool testStackCanary();
