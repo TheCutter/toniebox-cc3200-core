@@ -27,7 +27,7 @@
 /*
 	Uncomment this line to enable ThreadName Strings.
 
-	It might be usefull if you are loging thread with Serial,
+	It might be usefull if you are logging thread with Serial,
 	or displaying a list of threads...
 */
 #define USE_THREAD_NAMES	1
