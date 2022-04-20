@@ -71,9 +71,9 @@ SECTIONS
       __exidx_end = .;
     } > SRAM
 
-    __init_data = .;
+    /*__init_data = .;*/
 
-    .data : AT(__init_data)
+    .data : /*AT(__init_data)*/
     {
         _data = .;
         *(.data*)
