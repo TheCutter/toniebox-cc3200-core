@@ -13,8 +13,8 @@
 *
 ******************************************************************************/
 
-STACK_SIZE = 0x2100;
-HEAP_SIZE = 0xC3F0;/*0x3BF0; /*Original Size: 0x00010000*/
+STACK_SIZE = 0x2500;
+HEAP_SIZE = 0xBFFC;/*0x3BF0; /*Original Size: 0x00010000*/
 RAM_LOW_SIZE = 0x4000;
 
 MEMORY
