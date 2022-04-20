@@ -46,9 +46,9 @@ bool ThreadController::add(Thread* _thread){
 	for(int i = 0; i < MAX_THREADS; i++){
 		if(thread[i] != NULL && thread[i]->ThreadID == _thread->ThreadID) {
 			#ifdef USE_THREAD_NAMES
-			Log.debug("Thread %s already added to thread controller.", _thread->ThreadName);
+			Log.debug("Thread %s already added to controller.", _thread->ThreadName);
 			#else
-			Log.info("Thread already added to thread controller.");
+			Log.info("Thread already added to controller.");
 			#endif
 			//return true;
 		}
@@ -61,17 +61,17 @@ bool ThreadController::add(Thread* _thread){
 			thread[i] = _thread;
 			cached_size++;
 			#ifdef USE_THREAD_NAMES
-			Log.debug("Added thread %s to thread controller.", thread[i]->ThreadName);
+			Log.debug("Added thread %s to controller.", thread[i]->ThreadName);
 			#else
-			Log.debug("Added thread %i to thread controller.", i);
+			Log.debug("Added thread %i to controller.", i);
 			#endif
 			return true;
 		}
 	}
 	#ifdef USE_THREAD_NAMES
-	Log.debug("Thread %s not added to thread controller, please increase MAX_THREADS (%i).", _thread->ThreadName, MAX_THREADS);
+	Log.debug("Thread %s not added to controller, increase MAX_THREADS (%i).", _thread->ThreadName, MAX_THREADS);
 	#else
-	Log.debug("Thread not added to thread controller, please increase MAX_THREADS (%i).", MAX_THREADS);
+	Log.debug("Thread not added to controller, increase MAX_THREADS (%i).", MAX_THREADS);
 	#endif
 	// Array is full
 	return false;
