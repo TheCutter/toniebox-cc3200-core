@@ -8,8 +8,8 @@
 
 const uint32_t MEMORY_START = 0x20004000;
 const uint32_t MEMORY_END = MEMORY_START + 0x3C000;
-const uint32_t CANARY_STACK = 0x0BADBEE0;
-const uint32_t CANARY_HEAP = 0x0B4DBEE0;
+const uint32_t CANARY_STACK = 0xE0BEAD0B; //0x0BADBEE0;
+const uint32_t CANARY_HEAP =  0xE0BE4D0B; //0x0B4DBEE0;
 
 uint32_t freeMemory();
 uint32_t freeStackMemory();
