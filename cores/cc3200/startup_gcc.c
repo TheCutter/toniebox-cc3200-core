@@ -43,6 +43,7 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "crashCallback.h"
 
 //*****************************************************************************
 //
@@ -313,6 +314,7 @@ ResetISR(void)
 static void
 NmiSR(void)
 {
+    crashed(CRASH_NMI);
     //
     // Enter an infinite loop.
     //
@@ -331,6 +333,7 @@ NmiSR(void)
 static void
 FaultISR(void)
 {
+    crashed(CRASH_FAULT);
     //
     // Enter an infinite loop.
     //
@@ -350,6 +353,7 @@ FaultISR(void)
 static void
 BusFaultHandler(void)
 {
+    crashed(CRASH_BUS);
     //
     // Go into an infinite loop.
     //
@@ -368,6 +372,7 @@ BusFaultHandler(void)
 static void
 IntDefaultHandler(void)
 {
+    crashed(CRASH_INT);
     //
     // Go into an infinite loop.
     //
