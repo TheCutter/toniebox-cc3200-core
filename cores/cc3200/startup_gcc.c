@@ -314,7 +314,7 @@ ResetISR(void)
 static void
 NmiSR(void)
 {
-    crashed(CRASH_NMI);
+    crashed(CRASH_NMI, 0);
     //
     // Enter an infinite loop.
     //
@@ -333,7 +333,9 @@ NmiSR(void)
 static void
 FaultISR(void)
 {
-    crashed(CRASH_FAULT);
+    register unsigned* sp;
+    __asm__ volatile("mov %0, sp\n" : "=r" (sp) );
+    crashed(CRASH_FAULT, sp);
     //
     // Enter an infinite loop.
     //
@@ -353,7 +355,7 @@ FaultISR(void)
 static void
 BusFaultHandler(void)
 {
-    crashed(CRASH_BUS);
+    crashed(CRASH_BUS, 0);
     //
     // Go into an infinite loop.
     //
@@ -372,7 +374,7 @@ BusFaultHandler(void)
 static void
 IntDefaultHandler(void)
 {
-    crashed(CRASH_INT);
+    crashed(CRASH_INT, 0);
     //
     // Go into an infinite loop.
     //
