@@ -80,11 +80,11 @@ class FileFs
 public:
   FileFs() {};
   
-  bool     open( char * fileName, uint8_t mode = FA_OPEN_EXISTING );
+  bool     open( const char * fileName, uint8_t mode = FA_OPEN_EXISTING );
   bool     close();
   
   uint32_t write( void * buf, uint32_t lbuf );
-  int      writeString( char * str );
+  int      writeString( const char * str );
   bool     writeChar( char car );
   
   uint32_t read( void * buf, uint32_t lbuf );

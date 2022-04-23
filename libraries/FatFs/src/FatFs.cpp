@@ -347,7 +347,7 @@ uint16_t DirFs::fileModTime()
 //          (see ff.h for a description of possible values)
 // Return true if ok
    
-bool FileFs::open( char * fileName, uint8_t mode )
+bool FileFs::open( const char * fileName, uint8_t mode )
 {
   ffs_result = f_open( & ffile, fileName, mode );
   return ffs_result == FR_OK;
@@ -388,7 +388,7 @@ uint32_t FileFs::write( void * buf, uint32_t lbuf )
 //   str : string to write
 // Return number of characters written or -1 if an error occurs
 
-int FileFs::writeString( char * str )
+int FileFs::writeString( const char * str )
 {
   return f_puts( str, & ffile );
 }
