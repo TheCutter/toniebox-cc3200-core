@@ -16,9 +16,9 @@ typedef enum crashSource {
     CRASH_BUS = 0x04
 } crashSource;
 
-typedef void (*crash_callback)(crashSource, uint32_t);
+typedef void (*crash_callback)(crashSource, uint32_t*);
 void register_crash_callback(crash_callback callback);
-void crashed(crashSource source, uint32_t sp);
+void crashed(crashSource source, uint32_t* sp);
 
 #ifdef __cplusplus
 }

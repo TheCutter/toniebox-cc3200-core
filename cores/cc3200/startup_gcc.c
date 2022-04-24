@@ -333,7 +333,7 @@ NmiSR(void)
 static void
 FaultISR(void)
 {
-    register unsigned* sp;
+    register uint32_t* sp;
     __asm__ volatile("mov %0, sp\n" : "=r" (sp) );
     crashed(CRASH_FAULT, sp);
     //
