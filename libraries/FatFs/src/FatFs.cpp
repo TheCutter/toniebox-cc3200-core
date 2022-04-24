@@ -173,7 +173,7 @@ uint8_t FatFsClass::error()
 //   dirPath : absolute name of new directory
 // Return true if ok
 
-bool FatFsClass::mkdir( char * path )
+bool FatFsClass::mkdir( const char * path )
 {
   ffs_result = f_mkdir( path );
   return ffs_result == FR_OK; // || res == FR_EXIST;
@@ -183,7 +183,7 @@ bool FatFsClass::mkdir( char * path )
 //   path : absolute name of directory to remove
 // Return true if ok
 
-bool FatFsClass::rmdir( char * path )
+bool FatFsClass::rmdir( const char * path )
 {
   return remove( path );
 }
@@ -192,7 +192,7 @@ bool FatFsClass::rmdir( char * path )
 //   path : absolute name of file to remove
 // Return true if ok
 
-bool FatFsClass::remove( char * path )
+bool FatFsClass::remove( const char * path )
 {
   ffs_result = f_unlink( path );
   return ffs_result == FR_OK;
@@ -203,10 +203,10 @@ bool FatFsClass::remove( char * path )
 //   newName : new absolute name
 // Return true if ok
 
-bool FatFsClass::rename( char * oldName, char * newName )
+bool FatFsClass::rename( const char * oldName, const char * newName )
 {
-  char * oldName0 = oldName;
-  char * newName0 = newName;
+  const char * oldName0 = oldName;
+  const char * newName0 = newName;
   ffs_result = f_rename( oldName0, newName0 );
   return ffs_result == FR_OK;
 }
@@ -214,7 +214,7 @@ bool FatFsClass::rename( char * oldName, char * newName )
 // Return true if a file or directory exists
 //   path : absolute name of file or directory
 
-bool FatFsClass::exists( char * path )
+bool FatFsClass::exists( const char * path )
 {
   if( strcmp( path, "/" ) == 0 )
     return true;
@@ -223,7 +223,7 @@ bool FatFsClass::exists( char * path )
 
 // Return true if a absolute name correspond to an existing directory
 
-bool FatFsClass::isDir( char * path )
+bool FatFsClass::isDir( const char * path )
 {
   if( strcmp( path, "/" ) == 0 )
     return true;
@@ -235,7 +235,7 @@ bool FatFsClass::isDir( char * path )
 
 // Set time stamp of file or directory
 
-bool FatFsClass::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
+bool FatFsClass::timeStamp( const char * path, uint16_t year, uint8_t month, uint8_t day,
                             uint8_t hour, uint8_t minute, uint8_t second )
 {
   FILINFO finfo;
@@ -248,7 +248,7 @@ bool FatFsClass::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t d
 
 // Return date and time of last modification
 
-bool FatFsClass::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime )
+bool FatFsClass::getFileModTime( const char * path, uint16_t * pdate, uint16_t * ptime )
 {
   FILINFO finfo;
   
@@ -269,7 +269,7 @@ bool FatFsClass::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime
 //   dirPath : absolute name of directory
 // Return true if ok
 
-bool DirFs::openDir( char * dirPath )
+bool DirFs::openDir( const char * dirPath )
 {
   ffs_result = f_opendir( & dir, dirPath );
   return ffs_result == FR_OK;

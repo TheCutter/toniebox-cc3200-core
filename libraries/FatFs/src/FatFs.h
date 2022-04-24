@@ -38,15 +38,15 @@ public:
   int32_t  free();
   uint8_t  error();
   
-  bool     mkdir( char * path );
-  bool     rmdir( char * path );
-  bool     remove( char * path );
-  bool     rename( char * oldName, char * newName );
-  bool     exists( char * path );
-  bool     isDir( char * path );
-  bool     timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
+  bool     mkdir( const char * path );
+  bool     rmdir( const char * path );
+  bool     remove( const char * path );
+  bool     rename( const char * oldName, const char * newName );
+  bool     exists( const char * path );
+  bool     isDir( const char * path );
+  bool     timeStamp( const char * path, uint16_t year, uint8_t month, uint8_t day,
                       uint8_t hour, uint8_t minute, uint8_t second );
-  bool     getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime );
+  bool     getFileModTime( const char * path, uint16_t * pdate, uint16_t * ptime );
 
 private:
   FATFS    ffs;
@@ -60,7 +60,7 @@ public:
   DirFs()  {};
   ~DirFs() { f_closedir( & dir ); };
   
-  bool     openDir( char * dirPath );
+  bool     openDir( const char * dirPath );
   bool     closeDir();
   bool     nextFile();
   bool     rewind();
