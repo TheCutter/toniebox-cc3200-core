@@ -11,21 +11,22 @@ version=0.0.1
 # CC3200 compile variables
 # ----------------------
 
-compiler.warning_flags=-w
 compiler.warning_flags.none=-w
 compiler.warning_flags.default=
 compiler.warning_flags.more=-Wall
 compiler.warning_flags.all=-Wall -Wextra
+compiler.warning_flags={compiler.warning_flags.none}
 
 compiler.basepath={runtime.tools.arm-none-eabi-gcc-4.8.4-20140725.path}
 compiler.legacy_flag=-DUSE_CUSTOM_RANDOM
 #compiler.basepath={runtime.tools.arm-none-eabi-gcc-4.8.4-20140725.path}/../10-2020-q4-major
 #compiler.legacy_flag=
 compiler.opti_flag=s
+#compiler.opti_flag=2
 compiler.c.std=gnu11
 compiler.cpp.std=gnu++11
-compiler.debug_lvl=-g
-#compiler.debug_lvl=-g3
+#compiler.debug_lvl=-g
+compiler.debug_lvl=-g3
 
 compiler.path={compiler.basepath}/bin/
 compiler.c.cmd=arm-none-eabi-gcc
