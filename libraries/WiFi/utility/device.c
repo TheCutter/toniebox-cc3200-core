@@ -129,6 +129,10 @@ _i16 sl_Start(const void* pIfHdl, _i8*  pDevName, const P_INIT_CALLBACK pInitCal
         
         if (NULL == pInitCallBack)
         {
+            for (_u32 i=0; i<0xFFFFFF; i++){
+                 __asm__ volatile("nop"); //Delay otherwise it WILL wait forever?!
+            }
+            
             _SlDrvSyncObjWaitForever(&g_pCB->ObjPool[ObjIdx].SyncObj);
 
             /* release Pool Object */
