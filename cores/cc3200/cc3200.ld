@@ -19,7 +19,7 @@ RAM_LOW_SIZE = 0x4000;
 
 MEMORY
 {
-    SRAM (rwx) : ORIGIN = 0x20004000, LENGTH = 0x3C000 /* 0x30000 only 196kB?! for 256kB use 0x3C000 + 0x4000 lower mem (todo)*/
+    SRAM (rwx) : ORIGIN = 0x20004000, LENGTH = 0x3BFFF /* 0x30000 only 196kB?! for 256kB use 0x3C000 + 0x4000 lower mem (todo)*/
     SRAM_LOW (rw) : ORIGIN = 0x20000000, LENGTH = 0x4000 /* TODO */
 }
 
