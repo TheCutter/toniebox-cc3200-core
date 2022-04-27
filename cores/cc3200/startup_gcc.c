@@ -314,10 +314,13 @@ ResetISR(void)
 static void
 NmiSR(void)
 {
-    crashed(CRASH_NMI, 0);
+    register uint32_t* sp;
+    __asm__ volatile("mov %0, sp\n" : "=r" (sp) );
+    crashed(CRASH_NMI, sp);
     //
     // Enter an infinite loop.
     //
+    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -339,6 +342,7 @@ FaultISR(void)
     //
     // Enter an infinite loop.
     //
+    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -355,10 +359,13 @@ FaultISR(void)
 static void
 BusFaultHandler(void)
 {
-    crashed(CRASH_BUS, 0);
+    register uint32_t* sp;
+    __asm__ volatile("mov %0, sp\n" : "=r" (sp) );
+    crashed(CRASH_BUS, sp);
     //
     // Go into an infinite loop.
     //
+    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -374,10 +381,13 @@ BusFaultHandler(void)
 static void
 IntDefaultHandler(void)
 {
-    crashed(CRASH_INT, 0);
+    register uint32_t* sp;
+    __asm__ volatile("mov %0, sp\n" : "=r" (sp) );
+    crashed(CRASH_INT, sp);
     //
     // Go into an infinite loop.
     //
+    __asm__ volatile("bkpt");
     while(1)
     {
     }
