@@ -37,26 +37,27 @@
 //*****************************************************************************
 
 //Simplelink includes
-#include "simplelink.h"
-#include "cc_pal.h"
+#include <simplelink.h>
+#include <cc_pal.h>
 
 //Driverlib includes
-#include <inc/hw_ints.h>
-#include <inc/hw_udma.h>
-#include <inc/hw_types.h>
+#include <hw_ints.h>
+#include <hw_udma.h>
+#include <hw_types.h>
 #include <driverlib/pin.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_mcspi.h>
-#include <inc/hw_common_reg.h>
+#include <hw_memmap.h>
+#include <hw_mcspi.h>
+#include <hw_common_reg.h>
 #include <driverlib/rom.h>
 #include <driverlib/rom_map.h>
 #include <driverlib/spi.h>
 #include <driverlib/prcm.h>
 #include <driverlib/rom.h>
 #include <driverlib/rom_map.h>
-#include <inc/hw_ints.h>
+#include <hw_ints.h>
 #include <driverlib/interrupt.h>
 #include <driverlib/udma.h>
+#include <driverlib/timer.h>
 #include <driverlib/utils.h>
 
 //OSLib includes
@@ -803,6 +804,9 @@ void NwpPowerOn(void)
     HWREG(0x4402E16C) &= 0xFFFFFFFD;
 #endif
 
+    /* Clear host IRQ indication */
+    HWREG(0x400F7094) = 1;
+
     //NWP Wakeup
     HWREG(0x44025118) = 1;
 #ifndef DISABLE_DEBUGGER_RECONNECT
@@ -826,14 +830,14 @@ void NwpPowerOff(void)
 	//Must delay 300 usec to enable the NWP to finish all sl_stop activities
 	UtilsDelay(300*80/3);
 
-	//Mask Host Interrupt
+    //Mask Host Interrupt
     NwpMaskInterrupt();
-
+    
     //Switch to PFM Mode
     HWREG(0x4402F024) &= 0xF7FFFFFF;
 #ifdef CC3200_ES_1_2_1
     //Reset NWP
-    HWREG(APPS_SOFT_RESET_REG) |= 4;
+    HWREG(APPS_SOFT_RESET_REG) |= 4; 
     //WLAN PD OFF
     HWREG(OCP_SHARED_MAC_RESET_REG) |= 0xC00;
 #else
@@ -842,6 +846,82 @@ void NwpPowerOff(void)
 
     UtilsDelay(800000);
 #endif
+}
+
+/*!
+    \brief      Disable the Network Processor. This API additionally ensures that 
+                the Network processor has entered Low power mode before shutting
+                it down
+
+    \sa         sl_DeviceEnable
+
+    \note       belongs to \ref ported_sec
+*/
+void NwpPowerOff_WithNwpLpdsPoll(void)
+{
+    //Must delay 300 usec to enable the NWP to finish all sl_stop activities
+	UtilsDelay(300*80/3);
+    
+    //Mask Host Interrupt
+    NwpMaskInterrupt();
+    
+#ifdef CC3200_ES_1_2_1
+    //Reset NWP
+    HWREG(APPS_SOFT_RESET_REG) |= 4; 
+    //WLAN PD OFF
+    HWREG(OCP_SHARED_MAC_RESET_REG) |= 0xC00;
+#else
+    
+    // Dynamic delay loop to make sure the NWP has entered low power mode
+    {
+        // Wait for NWP to enter LPDS with 100 mSec timeout
+        unsigned int NwpActive;
+        long TimeoutUsec;
+
+        TimeoutUsec = 100000;
+
+        do
+        {
+            NwpActive = ((HWREG(0x4402DC48) & 0xF00) == 0x300);
+            TimeoutUsec -= 10;
+            UtilsDelay(800/6);
+        }while (NwpActive && (TimeoutUsec > 0));        
+    }  
+    
+    // Switch to PFM Mode
+    // Note: make sure the switch to PFM Mode is done just before killing the
+    // network processor
+    HWREG(0x4402F024) &= 0xF7FFFFFF;
+    
+    //Killing the NWP
+    HWREG(0x4402E16C) |= 0x2;
+
+    UtilsDelay(800000);
+#endif
+}
+
+/*!
+    \brief      This API additionally ensures that the NWP would shut down gracefully
+                before calling sl_Stop with 0 timeout. It assert the Out of band interrupt,
+				from APPS to NWP, in order that the NWP would stop it's activities and release 
+				resources gracefully.
+
+    \sa         sl_DeviceDisable
+	\sa			sl_Stop
+
+    \note       belongs to \ref ported_sec
+*/
+void NwpPrePowerOffTimout0(void)
+{
+
+	 HWREG(0x400F70B8) = 1;   /* APPs to NWP interrupt */
+
+	 /* 20usec delay */
+	 UtilsDelay(8000/5);
+
+ 	/* Clear APPs to NWP interrupt */
+ 	 HWREG(0x400F70B0) = 1;
+
 }
 
 
@@ -912,3 +992,43 @@ void cc_SetupTransfer(
     MAP_uDMAChannelEnable(ulChannel);
 
 }
+
+#ifdef sl_GetTimestamp
+#include "driverlib/timer.h"
+/*!
+  \brief   configures and starts the timer for simplelink time-stamping feature     
+  
+  \note    This API uses TIMERA2 module, hence should not be used by the application
+*/
+void simplelink_timerA2_start()
+{
+    //
+    // Configuring the timerA2
+    //
+    MAP_PRCMPeripheralClkEnable(PRCM_TIMERA2, PRCM_RUN_MODE_CLK);
+    MAP_PRCMPeripheralReset(PRCM_TIMERA2);
+    MAP_TimerConfigure(TIMERA2_BASE, TIMER_CFG_PERIODIC);
+    MAP_TimerPrescaleSet(TIMERA2_BASE, TIMER_A,0);
+
+    // configure the timer counter load value to max 32-bit value
+    MAP_TimerLoadSet(TIMERA2_BASE, TIMER_A, 0xFFFFFFFF);
+    //
+    // Enable the GPT
+    //
+    MAP_TimerEnable(TIMERA2_BASE, TIMER_A);
+}
+
+/*!
+  \brief   returns the time stamp value    
+  
+  \note    This API uses TIMERA2 module, hence should not be used by the application
+*/
+unsigned long TimerGetCurrentTimestamp()
+{
+	if(MAP_PRCMPeripheralStatusGet(PRCM_TIMERA2) == false)
+	{
+		simplelink_timerA2_start();
+	}
+	return (0xFFFFFFFF - MAP_TimerValueGet(TIMERA2_BASE, TIMER_A));
+}
+#endif

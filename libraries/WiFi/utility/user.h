@@ -47,6 +47,13 @@ extern "C" {
 #include <string.h>  
 #include "cc_pal.h"
 
+/* static installation of the provisioning external library*/
+#include "provisioning_api.h"
+#define SL_EXT_LIB_1							  sl_Provisioning
+
+#define SL_TIMESTAMP_TICKS_IN_10_MILLISECONDS     (_u32)(10000000)
+#define SL_TIMESTAMP_MAX_VALUE                    0xFFFFFFFF /* 32-bit timer counter */
+
 /*!
 	\def		MAX_CONCURRENT_ACTIONS
 
@@ -354,6 +361,28 @@ extern "C" {
 #define sl_DeviceDisable() 			NwpPowerOff()
 
 /*!
+    \brief      Disable the Network Processor after making sure the network processor has
+                entered low power mode
+
+    \sa         sl_DeviceEnable
+
+    \note       belongs to \ref configuration_sec
+*/
+#define sl_DeviceDisable_WithNwpLpdsPoll()          NwpPowerOff_WithNwpLpdsPoll()
+
+
+/*!
+    \brief      Preamble to the disabling the Network Processor.
+                        Placeholder to implement any pre-process operations
+                        before shutting down network operations.
+				
+    \sa         sl_DeviceDisable
+
+    \note       belongs to \ref configuration_sec
+*/
+#define sl_DeviceDisablePreamble() 	NwpPrePowerOffTimout0()
+
+/*!
 
  Close the Doxygen group.
  @}
@@ -568,10 +597,24 @@ extern "C" {
 
 /*!
 
- Close the Doxygen group.
- @}
+	\return		Returns 32-bit timer counter value (ticks unit) 
 
+    \sa
+
+	\note		 
+
+    \note       belongs to \ref porting_sec
+
+    \warning        
 */
+#ifndef SL_TINY_EXT
+#undef sl_GetTimestamp
+/* A timer must be started before using this function */
+/* User must allocate a 32-bit wide timer in order to take timestamps */
+#define sl_GetTimestamp           TimerGetCurrentTimestamp
+#endif
+
+
 
 
 
@@ -973,9 +1016,9 @@ typedef OsiLockObj_t                            _SlLockObj_t;
     \warning
 */
 
-/*
-#define sl_GeneralEvtHdlr
-*/
+
+#define _SlDrvHandleGeneralEvents       SimpleLinkGeneralEventHandler
+
 
 /*!
     \brief WLAN Async event handler
@@ -1165,6 +1208,12 @@ typedef OsiLockObj_t                            _SlLockObj_t;
 
  */
 
+extern int Report(const char *format, ...);
+/*
+int Report(const char* format, ...) {
+    //Workaround for defined Report in the WiFi/utility/
+    return 0;
+}*/
 
 #ifdef  __cplusplus
 }

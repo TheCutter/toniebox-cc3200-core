@@ -162,27 +162,12 @@ extern "C"
 #define I2S_MODE_TX_ONLY      0x00000001
 #define I2S_MODE_TX_RX_SYNC   0x00000003
 
-//*****************************************************************************
-// Macros
-//*****************************************************************************
-#define MCASP_GBL_RCLK		0x00000001
-#define MCASP_GBL_RHCLK		0x00000002
-#define MCASP_GBL_RSER		0x00000004
-#define MCASP_GBL_RSM		0x00000008
-#define MCASP_GBL_RFSYNC	0x00000010
-#define MCASP_GBL_XCLK		0x00000100
-#define MCASP_GBL_XHCLK		0x00000200
-#define MCASP_GBL_XSER		0x00000400
-#define MCASP_GBL_XSM		0x00000800
-#define MCASP_GBL_XFSYNC	0x00001000
 
 //*****************************************************************************
 //
 // API Function prototypes
 //
 //*****************************************************************************
-extern void I2SGBLEnable(unsigned long ulBase, unsigned long ulFlag);
-
 extern void I2SEnable(unsigned long ulBase, unsigned long ulMode);
 extern void I2SDisable(unsigned long ulBase);
 

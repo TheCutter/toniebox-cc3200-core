@@ -1,7 +1,7 @@
 /*
  * netapp.h - CC31xx/CC32xx Host Driver Implementation
  *
- * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
+ * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/ 
  * 
  * 
  *  Redistribution and use in source and binary forms, with or without 
@@ -116,23 +116,24 @@ extern "C" {
 /********************************************************************************************************/
 /* sl_NetAppDnsGetHostByName error codes     */
 
-#define SL_NET_APP_DNS_QUERY_NO_RESPONSE              (-159)  /* DNS query failed, no response                        */ 
+#define SL_NET_APP_DNS_QUERY_NO_RESPONSE              (-159)  /* DNS query failed, no response                        */
+#define SL_NET_APP_DNS_ERROR                          (-160)  /* DNS internal error                                   */
 #define SL_NET_APP_DNS_NO_SERVER                      (-161)  /* No DNS server was specified                          */ 
-#define SL_NET_APP_DNS_PARAM_ERROR                    (-162)  /* mDNS parameters error                                */
+#define SL_NET_APP_DNS_TIMEOUT                        (-162)  /* DNS timeout occured                                  */
 #define SL_NET_APP_DNS_QUERY_FAILED                   (-163)  /* DNS query failed; no DNS server sent an 'answer'     */ 
-#define SL_NET_APP_DNS_INTERNAL_1                     (-164)
-#define SL_NET_APP_DNS_INTERNAL_2                     (-165)
+#define SL_NET_APP_DNS_BAD_ADDRESS_ERROR              (-164)  /* Improperly formatted IPv4 or IPv6 address            */ 
+#define SL_NET_APP_DNS_SIZE_ERROR                     (-165)  /* DNS destination size is too small                    */ 
 #define SL_NET_APP_DNS_MALFORMED_PACKET               (-166)  /* Improperly formed or corrupted DNS packet received   */ 
-#define SL_NET_APP_DNS_INTERNAL_3                     (-167)
-#define SL_NET_APP_DNS_INTERNAL_4                     (-168)
-#define SL_NET_APP_DNS_INTERNAL_5                     (-169)
-#define SL_NET_APP_DNS_INTERNAL_6                     (-170)
-#define SL_NET_APP_DNS_INTERNAL_7                     (-171)
-#define SL_NET_APP_DNS_INTERNAL_8                     (-172)
-#define SL_NET_APP_DNS_INTERNAL_9                     (-173)
+#define SL_NET_APP_DNS_BAD_ID_ERROR                   (-167)  /* DNS packet from server does not match query ID       */
+#define SL_NET_APP_DNS_PARAM_ERROR                    (-168)  /* Invalid non pointer input to API                     */
+#define SL_NET_APP_DNS_SERVER_NOT_FOUND               (-169)  /* Server not found in Client list of DNS servers       */
+#define SL_NET_APP_DNS_PACKET_CREATE_ERROR            (-170)  /* Error creating DNS packet                            */
+#define SL_NET_APP_DNS_EMPTY_DNS_SERVER_LIST          (-171)  /* DNS Client's list of DNS servers is empty            */
+#define SL_NET_APP_DNS_SERVER_AUTH_ERROR              (-172)  /* Server not able to authenticate answer/authority data*/
+#define SL_NET_APP_DNS_ZERO_GATEWAY_IP_ADDRESS        (-173)  /* DNS Client IP instance has a zero gateway IP address */
 #define SL_NET_APP_DNS_MISMATCHED_RESPONSE            (-174)  /* Server response type does not match the query request*/
-#define SL_NET_APP_DNS_INTERNAL_10                    (-175)
-#define SL_NET_APP_DNS_INTERNAL_11                    (-176)
+#define SL_NET_APP_DNS_DUPLICATE_ENTRY                (-175)  /* Duplicate entry exists in DNS server table           */
+#define SL_NET_APP_DNS_RETRY_A_QUERY                  (-176)  /* SOA status returned; web site only exists as IPv4    */
 #define SL_NET_APP_DNS_NO_ANSWER                      (-177)  /* No response for one-shot query */
 #define SL_NET_APP_DNS_NO_KNOWN_ANSWER                (-178)  /* No known answer for query */
 #define SL_NET_APP_DNS_NAME_MISMATCH                  (-179)  /* Illegal service name according to the RFC            */
@@ -163,7 +164,7 @@ extern "C" {
 #define SL_NET_APP_HTTP_SERVER_ID                     (1)
 #define SL_NET_APP_DHCP_SERVER_ID                     (2)
 #define SL_NET_APP_MDNS_ID                            (4)
-#define SL_NET_APP_DNS_SERVER_ID                      (8)
+/* #define SL_NET_APP_DNS_SERVER_ID                      (8) */ 
 #define SL_NET_APP_DEVICE_CONFIG_ID                   (16)
 /* NetApp application set/get options */             
 #define NETAPP_SET_DHCP_SRV_BASIC_OPT                 (0)             

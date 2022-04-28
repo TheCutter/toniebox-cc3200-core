@@ -40,7 +40,7 @@
 
 #include "cc_pm.h"
 #include "osi.h"
-#include "spi_hal.h"
+#include "hal/spi_hal.h"
 
 /*
 *   OS port APIs

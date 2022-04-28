@@ -1,7 +1,7 @@
 /*
  * protocol.h - CC31xx/CC32xx Host Driver Implementation
  *
- * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
+ * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/ 
  * 
  * 
  *  Redistribution and use in source and binary forms, with or without 
@@ -68,12 +68,13 @@
 
 #define H2N_DUMMY_PATTERN    (_u32)0xFFFFFFFF
 #define N2H_SYNC_PATTERN     (_u32)0xABCDDCBA
+
 #define SYNC_PATTERN_LEN     (_u32)sizeof(_u32)
 #define UART_SET_MODE_MAGIC_CODE    (_u32)0xAA55AA55
 #define SPI_16BITS_BUG(pattern)     (_u32)((_u32)pattern & (_u32)0xFFFF7FFF)
 #define SPI_8BITS_BUG(pattern)      (_u32)((_u32)pattern & (_u32)0xFFFFFF7F)
 
-
+#define _SL_DRV_STATUS_BIT_DEVICE_STARTED         0x200
 
 typedef struct
 {
@@ -157,7 +158,7 @@ typedef struct
 
 #define SL_OPCODE_DEVICE_VERSIONREADCOMMAND	                            0x8470
 #define SL_OPCODE_DEVICE_VERSIONREADRESPONSE	                        0x0470
-#define SL_OPCODE_DEVICE_DEVICEASYNCFATALERROR                      	0x0078
+#define SL_OPCODE_DEVICE_ASYNC_GENERAL_ERROR                        	0x0078
 #define SL_OPCODE_WLAN_WLANCONNECTCOMMAND                           	0x8C80
 #define SL_OPCODE_WLAN_WLANCONNECTRESPONSE                          	0x0C80
 #define SL_OPCODE_WLAN_WLANASYNCCONNECTEDRESPONSE                   	0x0880

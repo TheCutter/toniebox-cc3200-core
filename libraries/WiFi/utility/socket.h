@@ -1,7 +1,7 @@
 /*
  * socket.h - CC31xx/CC32xx Host Driver Implementation
  *
- * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
+ * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/ 
  * 
  * 
  *  Redistribution and use in source and binary forms, with or without 
@@ -291,6 +291,10 @@ extern "C" {
 #define SL_SO_SECURE_FILES_CERTIFICATE_FILE_NAME (31) /* This option used to configue secure file */
 #define SL_SO_SECURE_FILES_CA_FILE_NAME          (32) /* This option used to configue secure file */
 #define SL_SO_SECURE_FILES_DH_KEY_FILE_NAME      (33) /* This option used to configue secure file */
+#define SL_SO_SECURE_DOMAIN_NAME_VERIFICATION       (35)
+#define SL_SO_SO_SECURE_CHAIN_SERIAL_NUMBERS     (36) /* enable receiving certificate chain serial numbers*/
+#define SL_SO_RCVWND	(37)		/* setting TCP receive window and receive pool buffers count */
+#define SECURE_MAX_DOMAIN_LENGTH                 (64)
 
 #define SL_IP_MULTICAST_IF     (60) /* Specify outgoing multicast interface */
 #define SL_IP_MULTICAST_TTL    (61) /* Specify the TTL value to use for outgoing multicast packet. */
@@ -334,9 +338,10 @@ extern "C" {
 #define SL_IP_LEASE_EXPIRED          (2)
 
 /* possible types when receiving SL_SOCKET_ASYNC_EVENT*/
-#define SSL_ACCEPT                                (1) /* accept failed due to ssl issue ( tcp pass) */
-#define RX_FRAGMENTATION_TOO_BIG                  (2) /* connection less mode, rx packet fragmentation > 16K, packet is being released */
-#define OTHER_SIDE_CLOSE_SSL_DATA_NOT_ENCRYPTED   (3) /* remote side down from secure to unsecure */
+#define SSL_ACCEPT                                (0) /* accept failed due to ssl issue ( tcp pass) */
+#define RX_FRAGMENTATION_TOO_BIG                  (1) /* connection less mode, rx packet fragmentation > 16K, packet is being released */
+#define OTHER_SIDE_CLOSE_SSL_DATA_NOT_ENCRYPTED   (2) /* remote side down from secure to unsecure */
+#define CHAIN_CERTIFICATE_SERIAL_NUMBER           (3) /* certificate serial number in handshake */
 
 
 
@@ -477,13 +482,17 @@ typedef struct
     _u32 NonblockingEnabled;/* 0 = disabled;1 = enabled;default = 1*/
 }SlSockNonblocking_t;
 
+typedef struct
+{
+  _u32 enableDisable;/* 0 = disabled;1 = enabled;default = 1*/
+}SlSockChainSerials_t;
 
 typedef struct
 {
   _u8   sd;
   _u8   type;
   _i16  val;
-  _u8*  pExtraInfo;
+  _u8  pExtraInfo[128];
 } SlSocketAsyncEvent_t;
 
 typedef struct
@@ -508,10 +517,6 @@ typedef struct
 } SlSockEvent_t;
 
 
-
-
-
-
 typedef struct
 {
     _u32    secureMask;
@@ -521,6 +526,12 @@ typedef struct
 {
     _u8     secureMethod;
 } SlSockSecureMethod;
+
+typedef struct
+{
+    _u32 Winsize;          /* receive window size for tcp sockets  */
+    _u32 Rcvbuf;           /* receive buffers for socket  */
+}SlSockWinParam_t;
 
 typedef enum
 {
@@ -641,7 +652,7 @@ typedef struct sock_secureFiles
 
 typedef struct SlFdSet_t                    /* The select socket array manager */
 { 
-   _u32        fd_array[(SL_FD_SETSIZE + 31)/32]; /* Bit map of SOCKET Descriptors */
+   _u32        fd_array[(SL_FD_SETSIZE + (_u8)31)/(_u8)32]; /* Bit map of SOCKET Descriptors */
 } SlFdSet_t;
 
 typedef struct
@@ -1040,9 +1051,27 @@ void SL_FD_ZERO(SlFdSet_t *fdset);
                                   - <b>SL_SO_SECURE_FILES_DH_KEY_FILE_NAME</b> \n
                                                  Map secured socket to Diffie Hellman file by name \n
                                                  This options takes <b>_u8</b> buffer as parameter 
+                                  - <b>SL_SO_SECURE_DOMAIN_NAME_VERIFICATION</b> \n   
+                                                 Enable disable domain verification during handshae
+                                  - <b>SL_SO_SO_SECURE_CHAIN_SERIAL_NUMBERS</b> \n   
+                                                 Enable receiving socket async event with the serial
+                                                 Numbers and common name of certificates in the handshake 
+                                                 chain. \n
+                                                 use SlSockChainSerials_t struct for the value and sizeof. \n
+                                                 Each certificate triggers different async event. \n
+                                                 The information in pExtraInfo is \n
+                                                 [len of serial - 1 byte] [serial number] [len of CN - 1 byte] [common name (no null termination)]
                                   - <b>SL_SO_CHANGE_CHANNEL</b> \n
                                                  Sets channel in transceiver mode.
                                                  This options takes <b>_u32</b> as channel number parameter
+                                  - <b>SL_SO_RCVWND</b> \n   
+                                                 Enable setting the a constant TCP receive window to the peer device	\n
+                                                 and also setting a fix number of RX buffers from the pool.	\n
+                                                 The window size and buffers size are all in bytes and should be	\n
+                                                 a multiple of 1460.	\n
+                                                 The maximum number is 1460*59 = 86140. \n
+                                                 sl_GetSockOpt() can also be used to get the configuration.		\n
+                                                 use SlSockWinParam_t struct for the value and sizeof. \n             
                                 - <b>SL_IPPROTO_IP</b> 
                                   - <b>SL_IP_MULTICAST_TTL</b> \n
                                                  Set the time-to-live value of outgoing multicast packets for this socket. \n
@@ -1163,6 +1192,25 @@ void SL_FD_ZERO(SlFdSet_t *fdset);
      \code
            sl_SetSockOpt(SockID,SL_SOL_SOCKET,SL_SO_SECURE_FILES_DH_KEY_FILE_NAME,"myDHinServerMode.der",strlen("myDHinServerMode.der"));
      \endcode
+
+     \par   
+    <b>   SL_SO_RCVWND:</b>
+    \code 
+           SlSockWinParam_t size;
+           int  iSockID;
+           int  iStatus;
+           SlSocklen_t optlen;
+           
+           size.Winsize = 30*1460;  // bytes
+	    size.Rcvbuf = 59*1460;  // bytes
+	    
+           iSockID = sl_Socket(SL_AF_INET,SL_SOCK_STREAM, SL_SEC_SOCKET);
+           iStatus = sl_Connect(iSockID, ( SlSockAddr_t *)&sAddr, iAddrSize);
+           sl_SetSockOpt(iSockID, SL_SOL_SOCKET, SO_RCVWND,(_u8 *)&size, sizeof(size));
+
+           optlen = sizeof(size);
+	    sl_GetSockOpt(iSockID, SL_SOL_SOCKET, SO_RCVWND, (_u8 *)&size, &optlen);
+    \endcode
 
    \par   
     <b>   SL_IP_MULTICAST_TTL:</b>

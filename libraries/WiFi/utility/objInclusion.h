@@ -1,7 +1,7 @@
 /*
  * objInclusion.h - CC31xx/CC32xx Host Driver Implementation
  *
- * Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
+ * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/ 
  * 
  * 
  *  Redistribution and use in source and binary forms, with or without 
@@ -300,6 +300,9 @@ extern "C" {
 
 #define _SL_INC_sl_Stop                 __dev
 
+#ifndef WIN32
+#define _SL_INC_sl_Stop_WithNwpLpdsPoll __dev
+#endif
 #define _SL_INC_sl_StatusGet            __dev
 
 #ifdef SL_IF_TYPE_UART  

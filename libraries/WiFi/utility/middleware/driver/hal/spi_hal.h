@@ -42,7 +42,7 @@
 
 #include "cc_types.h"
 #include "hw_types.h"
-#include <spi.h>
+#include <driverlib/spi.h>
 
 #define MAX_SPI_MODULES         3
 #define DUMMY_SPI_WORD          0xFFFFFFFF   

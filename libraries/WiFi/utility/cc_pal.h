@@ -190,6 +190,10 @@ void NwpPowerOnPreamble(void);
 
 void NwpPowerOff(void);
 
+void NwpPowerOff_WithNwpLpdsPoll(void);
+
+void NwpPrePowerOffTimout0(void);
+
 void NwpPowerOn(void);
 
 
