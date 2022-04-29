@@ -320,7 +320,6 @@ NmiSR(void)
     //
     // Enter an infinite loop.
     //
-    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -342,7 +341,6 @@ FaultISR(void)
     //
     // Enter an infinite loop.
     //
-    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -365,7 +363,6 @@ BusFaultHandler(void)
     //
     // Go into an infinite loop.
     //
-    __asm__ volatile("bkpt");
     while(1)
     {
     }
@@ -387,7 +384,6 @@ IntDefaultHandler(void)
     //
     // Go into an infinite loop.
     //
-    __asm__ volatile("bkpt");
     while(1)
     {
     }
