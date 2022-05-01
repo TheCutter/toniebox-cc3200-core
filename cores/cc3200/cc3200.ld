@@ -14,13 +14,14 @@
 ******************************************************************************/
 
 STACK_SIZE = 0x2500;
-HEAP_SIZE = 0xA1D4;/*0x3BF0; /*Original Size: 0x00010000*/
+HEAP_SIZE = 0x9000;/*0x3BF0; /*Original Size: 0x00010000*/
 RAM_LOW_SIZE = 0x4000;
 
 MEMORY
 {
-    SRAM (rwx) : ORIGIN = 0x20004000, LENGTH = 0x3BFFF /* 0x30000 only 196kB?! for 256kB use 0x3C000 + 0x4000 lower mem (todo)*/
-    SRAM_LOW (rw) : ORIGIN = 0x20000000, LENGTH = 0x4000 /* TODO */
+    SRAM_BIN (rwx)  : ORIGIN = 0x20004000, LENGTH = 0x30000 /*Limit to 196kB (debug-bootloader @0x20004000+0x30000) LENGTH = 0x3C000 */
+    SRAM_FULL (rwx) : ORIGIN = 0x20004000, LENGTH = 0x3C000 
+    SRAM_LOW (rw)   : ORIGIN = 0x20000000, LENGTH = 0x04000 
 }
 
 SECTIONS
@@ -64,14 +65,14 @@ SECTIONS
 
         . = ALIGN(8);
         _etext = .;
-    } > SRAM
+    } > SRAM_BIN AT > SRAM_FULL
 
     PROVIDE_HIDDEN (__exidx_start = .);
     .ARM : {
     __exidx_start = .;
       *(.ARM.exidx*)
       __exidx_end = .;
-    } > SRAM
+    } > SRAM_BIN AT > SRAM_FULL
 
     /*__init_data = .;*/
 
@@ -81,14 +82,14 @@ SECTIONS
         *(.data*)
 	    . = ALIGN (8);
         _edata = .;
-    } > SRAM
+    } > SRAM_BIN AT > SRAM_FULL
 
     .stack : {
         _stack = .;
         . = . + STACK_SIZE;
         . = ALIGN(4);
         _estack = .;
-    } > SRAM
+    } > SRAM_FULL
 
     .bss :
     {
@@ -96,7 +97,7 @@ SECTIONS
         *(.bss*)
         *(COMMON)
         _ebss = .;
-    } > SRAM
+    } > SRAM_FULL
 
     .heap :
     {
@@ -104,7 +105,12 @@ SECTIONS
         . = . + HEAP_SIZE;
         . = ALIGN(8);
         _eheap = .;
-    } > SRAM
+    } > SRAM_FULL
+
+    .memoryend :
+    {
+        . = .;
+    } > SRAM_FULL
 
     .ringbuffer :
     {
