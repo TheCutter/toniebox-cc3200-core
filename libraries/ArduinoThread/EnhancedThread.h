@@ -53,7 +53,7 @@ class EnhancedThread : public Thread {
     void sampleMemory(uint8_t id);
 
   private:
-    bool _runOnce;
+    bool _runOnce = false;
 
     bool _firstIntervalSample = true;
 };
