@@ -148,14 +148,13 @@ static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to)
         return value << (to-from);
 }
 
-#define NO_OF_SAMPLES 32
-unsigned long pulAdcSamples[4096];
-uint16_t analogRead(uint8_t pin)
-{
-    uint16_t channel, val;
+#define MAX_NO_OF_SAMPLES 256
+uint16_t pulAdcSamples[MAX_NO_OF_SAMPLES];
+uint16_t analogReadAvg(uint8_t pin, uint8_t samplesCount) {
+    uint16_t channel;
     uint16_t pinNum = digitalPinToPinNum(pin);
-	uint16_t uiIndex = 0;
-	uint32_t ulSample; 
+	uint8_t uiIndex = 0;
+	volatile uint32_t averageSample = 0;
 
     switch(pinNum) {
         /* case PIN_57: {channel = ADC_CH_0;}break; */
@@ -166,22 +165,28 @@ uint16_t analogRead(uint8_t pin)
     }
 
     MAP_PinTypeADC(pinNum, PIN_MODE_255);
-	MAP_ADCTimerConfig(ADC_BASE,2^17); // Configure ADC timer which is used to timestamp the ADC data samples
+	MAP_ADCTimerConfig(ADC_BASE, 0x1FFFF); // Configure ADC timer which is used to timestamp the ADC data samples
 	MAP_ADCTimerEnable(ADC_BASE); // Enable ADC timer which is used to timestamp the ADC data samples
 	MAP_ADCEnable(ADC_BASE); // Enable ADC module
 	MAP_ADCChannelEnable(ADC_BASE, channel); // Enable ADC channel
 
-	while (uiIndex < NO_OF_SAMPLES + 4) {
+	while(MAP_ADCFIFOLvlGet(ADC_BASE, channel)) { // flush the channel's FIFO if not empty
+        MAP_ADCFIFORead(ADC_BASE, channel);
+    }
+
+	while (uiIndex < samplesCount) {
 		if (MAP_ADCFIFOLvlGet(ADC_BASE, channel)) {
-			ulSample = MAP_ADCFIFORead(ADC_BASE, channel);
-			pulAdcSamples[uiIndex++] = ulSample;
+			pulAdcSamples[uiIndex++] = MAP_ADCFIFORead(ADC_BASE, channel) & 0x3FFF;
+			averageSample += pulAdcSamples[uiIndex-1];
 		}
 	}
+
     MAP_ADCDisable(ADC_BASE);
     MAP_ADCChannelDisable(ADC_BASE, channel);
     MAP_ADCTimerDisable(ADC_BASE);
 
-	return (pulAdcSamples[4] >> 2 ) & 0x0FFF;
+	averageSample = averageSample/samplesCount;
+	return averageSample;
 
 	
 	/*
@@ -205,6 +210,9 @@ uint16_t analogRead(uint8_t pin)
 
     val = val >> 2;
     return mapResolution(val, 12, _readResolution);*/
-	
+}
+
+uint16_t analogRead(uint8_t pin) {
+	return analogReadAvg(pin, 1);
 }
 
