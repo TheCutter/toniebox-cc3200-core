@@ -243,20 +243,20 @@ void MMA8452Q::setupTap(byte xThs, byte yThs, byte zThs)
 	byte temp = 0;
 	if (!(xThs & 0x80)) // If top bit ISN'T set
 	{
-		temp |= 0x3;					 // Enable taps on x
+		temp |= 0b00000011;					 // Enable taps on x
 		writeRegister(PULSE_THSX, xThs); // x thresh
 	}
 	if (!(yThs & 0x80))
 	{
-		temp |= 0xC;					 // Enable taps on y
+		temp |= 0b00001100;					 // Enable taps on y
 		writeRegister(PULSE_THSY, yThs); // y thresh
 	}
 	if (!(zThs & 0x80))
 	{
-		temp |= 0x30;					 // Enable taps on z
+		temp |= 0b00110000;					 // Enable taps on z
 		writeRegister(PULSE_THSZ, zThs); // z thresh
 	}
-	// Set up single and/or double tap detection on each axis individually.
+	// Set up single and/or double tap (0x20) detection on each axis individually.
 	writeRegister(PULSE_CFG, temp | 0x40);
 	// Set the time limit - the maximum time that a tap can be above the thresh
 	writeRegister(PULSE_TMLT, 0x30); // 30ms time limit at 800Hz odr
@@ -280,7 +280,7 @@ byte MMA8452Q::readTap()
 	byte tapStat = readRegister(PULSE_SRC);
 	if (tapStat & 0x80) // Read EA bit to check if a interrupt was generated
 	{
-		return tapStat & 0x7F;
+		return (tapStat & 0x7F);
 	}
 	else
 		return 0;
