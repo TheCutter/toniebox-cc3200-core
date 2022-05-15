@@ -116,7 +116,7 @@ bool WebServer::_parseRequest(WiFiClient& client) {
   }
   _currentMethod = method;
 
-  Log.verbose("method: %s url: %s search: %s", methodStr.c_str(), url.c_str(), searchStr.c_str());
+  Log.verbose("method: %s url: %s args: %s", methodStr.c_str(), url.c_str(), searchStr.c_str());
 
   //attach handler
   RequestHandler* handler;
@@ -149,8 +149,8 @@ bool WebServer::_parseRequest(WiFiClient& client) {
       headerValue.trim();
        _collectHeader(headerName.c_str(),headerValue.c_str());
 
-      Log.verbose("headerName: %s", headerName.c_str());
-      Log.verbose("headerValue: %s", headerValue.c_str());
+      //Log.verbose("headerName: %s", headerName.c_str());
+      //Log.verbose("headerValue: %s", headerValue.c_str());
 
       if (headerName.equalsIgnoreCase(FPSTR(Content_Type))){
         using namespace mime;
@@ -222,8 +222,8 @@ bool WebServer::_parseRequest(WiFiClient& client) {
       headerValue = req.substring(headerDiv + 2);
       _collectHeader(headerName.c_str(),headerValue.c_str());
 
-	  Log.verbose("headerName: %s", headerName.c_str());
-	  Log.verbose("headerValue: %s", headerValue.c_str());
+	  //Log.verbose("headerName: %s", headerName.c_str());
+	  //Log.verbose("headerValue: %s", headerValue.c_str());
 
 	  if (headerName.equalsIgnoreCase("Host")){
         _hostHeader = headerValue;
@@ -233,8 +233,8 @@ bool WebServer::_parseRequest(WiFiClient& client) {
   }
   client.flush();
 
-  Log.verbose("Request: %s", url.c_str());
-  Log.verbose(" Arguments: %s", searchStr.c_str());
+  //Log.verbose("Request: %s", url.c_str());
+  //Log.verbose(" Arguments: %s", searchStr.c_str());
 
   return true;
 }
@@ -250,7 +250,7 @@ bool WebServer::_collectHeader(const char* headerName, const char* headerValue) 
 }
 
 void WebServer::_parseArguments(String data) {
-  Log.verbose("args: %s", data.c_str());
+  //Log.verbose("args: %s", data.c_str());
   if (_currentArgs)
     delete[] _currentArgs;
   _currentArgs = 0;
@@ -268,7 +268,7 @@ void WebServer::_parseArguments(String data) {
     ++i;
     ++_currentArgCount;
   }
-  Log.verbose("args count: %d", _currentArgCount);
+  //Log.verbose("args count: %d", _currentArgCount);
 
   _currentArgs = new RequestArgument[_currentArgCount+1];
   int pos = 0;
@@ -276,7 +276,7 @@ void WebServer::_parseArguments(String data) {
   for (iarg = 0; iarg < _currentArgCount;) {
     int equal_sign_index = data.indexOf('=', pos);
     int next_arg_index = data.indexOf('&', pos);
-    Log.verbose("pos %d =@%d &@%d", pos, equal_sign_index, next_arg_index);
+    //Log.verbose("pos %d =@%d &@%d", pos, equal_sign_index, next_arg_index);
     if ((equal_sign_index == -1) || ((equal_sign_index > next_arg_index) && (next_arg_index != -1))) {
       Log.error("arg missing value: %d", iarg);
       if (next_arg_index == -1)
@@ -287,15 +287,14 @@ void WebServer::_parseArguments(String data) {
     RequestArgument& arg = _currentArgs[iarg];
     arg.key = urlDecode(data.substring(pos, equal_sign_index));
     arg.value = urlDecode(data.substring(equal_sign_index + 1, next_arg_index));
-    Log.verbose("arg %d key: %s value: %s", iarg, arg.key.c_str(), arg.value.c_str());
+    //Log.verbose("arg %d key: %s value: %s", iarg, arg.key.c_str(), arg.value.c_str());
     ++iarg;
     if (next_arg_index == -1)
       break;
     pos = next_arg_index + 1;
   }
   _currentArgCount = iarg;
-  Log.verbose("args count: %d", _currentArgCount);
-
+  //Log.verbose("args count: %d", _currentArgCount);
 }
 
 void WebServer::_uploadWriteByte(uint8_t b){
