@@ -1,0 +1,18 @@
+{
+  "name": "toniebox-cc3200-core",
+  "version": "1.0.0",
+  "description": "Energia Wiring-based Framework for Texas Instruments M4 Cortex Toniebox microcontrollers",
+  "keywords": [
+    "framework",
+    "wiring",
+    "texas instruments",
+    "msp432",
+    "msp432r",
+    "energia"
+  ],
+  "homepage": "https://github.com/toniebox-reverse-engineering/toniebox-cc3200-core",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toniebox-reverse-engineering/toniebox-cc3200-core"
+  }
+}
